@@ -1,0 +1,41 @@
+<section class="hero">
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <span class="hero-badge">Real estate marketplace</span>
+    <h1>Find your perfect home</h1>
+    <p>Browse apartments, houses, and commercial properties across Kazakhstan.</p>
+
+    <div class="hero-card">
+      <div class="category-toggle">
+        <button
+          [class.active]="category === 'buy'"
+          (click)="onCategorySelect('buy')">
+          Buy
+        </button>
+
+        <button
+          [class.active]="category === 'rent'"
+          (click)="onCategorySelect('rent')">
+          Rent
+        </button>
+      </div>
+
+      <div class="search-row">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onQueryChange()"
+          placeholder="Search by title..."
+        />
+
+        <select [(ngModel)]="propertyType" (change)="onTypeChange()">
+          <option value="">All types</option>
+          <option value="Apartment">Apartment</option>
+          <option value="House">House</option>
+          <option value="Commercial">Commercial</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>

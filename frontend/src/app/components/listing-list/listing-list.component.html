@@ -1,0 +1,13 @@
+<div *ngIf="listings.length > 0; else emptyState" class="listing-grid">
+  <app-listing-card
+    *ngFor="let listing of listings"
+    [listing]="listing">
+  </app-listing-card>
+</div>
+
+<ng-template #emptyState>
+  <div class="empty-state">
+    <h3>No properties found</h3>
+    <p>Try changing your filters or search text.</p>
+  </div>
+</ng-template>

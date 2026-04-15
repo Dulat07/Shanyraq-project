@@ -1,0 +1,75 @@
+<section class="post-page">
+  <div class="post-page__container">
+    <div class="post-form">
+      <div class="post-form__header">
+        <span class="post-form__badge">Post new ad</span>
+        <h2>Create your property listing</h2>
+        <p>Fill in the main details below to make your property look clear and attractive.</p>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field form-field--full">
+          <label for="title">Listing title</label>
+          <input id="title" [(ngModel)]="form.title" placeholder="Modern apartment in Almaty" />
+        </div>
+
+        <div class="form-field">
+          <label for="price">Price</label>
+          <input id="price" [(ngModel)]="form.price" type="number" placeholder="85000" />
+        </div>
+
+        <div class="form-field">
+          <label for="city">City</label>
+          <input id="city" [(ngModel)]="form.city" placeholder="Almaty" />
+        </div>
+
+        <div class="form-field">
+          <label for="rooms">Rooms</label>
+          <input id="rooms" [(ngModel)]="form.rooms" type="number" placeholder="2" />
+        </div>
+
+        <div class="form-field">
+          <label for="area">Area (m²)</label>
+          <input id="area" [(ngModel)]="form.area" type="number" placeholder="68" />
+        </div>
+
+        <div class="form-field">
+          <label for="category">Category</label>
+          <select id="category" [(ngModel)]="form.category">
+            <option value="buy">Buy</option>
+            <option value="rent">Rent</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="type">Property type</label>
+          <select id="type" [(ngModel)]="form.type">
+            <option value="Apartment">Apartment</option>
+            <option value="House">House</option>
+            <option value="Commercial">Commercial</option>
+          </select>
+        </div>
+
+        <div class="form-field form-field--full">
+          <label for="image">Image URL</label>
+          <input id="image" [(ngModel)]="form.image" placeholder="https://..." />
+        </div>
+
+        <div class="form-field form-field--full">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            [(ngModel)]="form.description"
+            placeholder="Describe the property, condition, location, and key advantages...">
+          </textarea>
+        </div>
+      </div>
+
+      <div class="post-form__actions">
+        <button type="button" class="post-form__submit" (click)="submitForm()">
+          Publish listing
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+<div class="listing-card">
+  <div class="listing-card__image-wrap">
+    <img
+      [src]="listing.image"
+      [alt]="listing.title"
+      class="listing-card__image"
+    />
+    <div class="listing-card__badge">
+      {{ listing.category | titlecase }}
+    </div>
+  </div>
+
+  <div class="listing-card__body">
+    <div class="listing-card__top">
+      <h3 class="listing-card__title">{{ listing.title }}</h3>
+      <p class="listing-card__price">${{ listing.price | number }}</p>
+    </div>
+
+    <p class="listing-card__city">{{ listing.city }}</p>
+
+    <div class="listing-card__meta">
+      <span>{{ listing.rooms }} rooms</span>
+      <span>{{ listing.area }} m²</span>
+      <span>{{ listing.type }}</span>
+    </div>
+
+    <p class="listing-card__description">
+      {{ listing.description }}
+    </p>
+
+    <button class="listing-card__button">View details</button>
+  </div>
+</div>

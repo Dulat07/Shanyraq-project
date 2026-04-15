@@ -1,0 +1,56 @@
+<app-search
+  [searchQuery]="searchQuery"
+  [category]="category"
+  [propertyType]="propertyType"
+  (searchQueryChange)="onSearchQueryChange($event)"
+  (categoryChange)="onCategoryChange($event)"
+  (propertyTypeChange)="onTypeChange($event)">
+</app-search>
+
+<div class="page-shell">
+  <app-filters
+    [filters]="filters"
+    [cities]="cities"
+    (filtersChange)="onFiltersChange($event)"
+    (clear)="clearFilters()">
+  </app-filters>
+
+  <section class="listings-section">
+    <div class="section-head">
+      <div>
+        <h2>Available Properties</h2>
+        <p>{{ filteredListings.length }} results found</p>
+      </div>
+    </div>
+
+    <app-listing-list [listings]="filteredListings"></app-listing-list>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="about-section__header">
+      <span class="about-section__badge">About Us</span>
+      <h2>Helping people find the right place faster</h2>
+      <p>
+        Our marketplace helps users discover apartments, houses, and commercial
+        spaces with a simple search experience and clean listing presentation.
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-card">
+        <h3>Fast Search</h3>
+        <p>Quick filters and clear categories help users find relevant properties in seconds.</p>
+      </div>
+
+      <div class="about-card">
+        <h3>Reliable Listings</h3>
+        <p>Structured cards and property details make browsing feel trustworthy and easy.</p>
+      </div>
+
+      <div class="about-card">
+        <h3>Easy Booking</h3>
+        <p>A simple and familiar marketplace layout helps users move from discovery to action.</p>
+      </div>
+    </div>
+  </section>
+</div>

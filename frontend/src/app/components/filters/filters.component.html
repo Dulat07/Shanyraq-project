@@ -1,0 +1,65 @@
+<div class="filters-panel">
+  <div class="filters-grid">
+    <input
+      type="number"
+      placeholder="Min price"
+      [(ngModel)]="filters.minPrice"
+      (ngModelChange)="emitChanges()"
+    />
+
+    <input
+      type="number"
+      placeholder="Max price"
+      [(ngModel)]="filters.maxPrice"
+      (ngModelChange)="emitChanges()"
+    />
+
+    <select [(ngModel)]="filters.city" (change)="emitChanges()">
+      <option value="">All cities</option>
+      <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
+    </select>
+
+    <select [(ngModel)]="filters.rooms" (change)="emitChanges()">
+      <option value="">Any rooms</option>
+      <option value="1">1 room</option>
+      <option value="2">2 rooms</option>
+      <option value="3">3 rooms</option>
+      <option value="3+">3+ rooms</option>
+    </select>
+
+    <input
+      type="number"
+      placeholder="Min area"
+      [(ngModel)]="filters.minArea"
+      (ngModelChange)="emitChanges()"
+    />
+
+    <input
+      type="number"
+      placeholder="Max area"
+      [(ngModel)]="filters.maxArea"
+      (ngModelChange)="emitChanges()"
+    />
+
+    <select [(ngModel)]="filters.furnished" (change)="emitChanges()">
+      <option value="">Furnished: any</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <select [(ngModel)]="filters.parking" (change)="emitChanges()">
+      <option value="">Parking: any</option>
+      <option value="yes">Yes</option>
+      <option value="no">No</option>
+    </select>
+
+    <select [(ngModel)]="filters.sortBy" (change)="emitChanges()">
+      <option value="">Sort by</option>
+      <option value="priceAsc">Price low → high</option>
+      <option value="priceDesc">Price high → low</option>
+      <option value="newest">Newest</option>
+    </select>
+
+    <button class="clear-btn" (click)="clearFilters()">Clear filters</button>
+  </div>
+</div>
