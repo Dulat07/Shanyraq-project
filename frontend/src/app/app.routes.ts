@@ -5,6 +5,11 @@ import { LoginComponent } from './components/login/login.component';
 import { PostFormComponent } from './components/post/post.component';
 import { FavoritesPageComponent } from './components/favorites-page/favorites-page.component';
 import { ListingDetailsComponent } from './components/listing-details/listing-details.component';
+import { AccountPageComponent } from './components/account/account-page.component';
+import { MyListingsComponent } from './components/account/tabs/my-listings.component';
+import { AccountFavoritesComponent } from './components/account/tabs/favorites.component';
+import { AccountRecentComponent } from './components/account/tabs/recent.component';
+import { SettingsComponent } from './components/account/tabs/settings.component';
 
 
 export const routes: Routes = [
@@ -13,6 +18,16 @@ export const routes: Routes = [
   { path: 'property-details/:id', component: PropertyDetailsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'post', component: PostFormComponent },
+  {
+    path: 'account',
+    component: AccountPageComponent,
+    children: [
+      { path: '', component: MyListingsComponent },
+      { path: 'favorites', component: AccountFavoritesComponent },
+      { path: 'recent', component: AccountRecentComponent },
+      { path: 'settings', component: SettingsComponent }
+    ]
+  },
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'favorites', component: FavoritesPageComponent }
 ];

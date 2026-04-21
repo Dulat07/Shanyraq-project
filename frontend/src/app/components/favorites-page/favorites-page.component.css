@@ -69,43 +69,6 @@
   top: 14px;
   left: 14px;
   z-index: 2;
-
-  width: 42px;
-  height: 42px;
-  padding: 0;
-
-  border: none;
-  border-radius: 50%;
-  background: #ffffff;
-  color: #333333;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  transition: transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
-}
-
-.remove-btn:hover {
-  color: #dc2626;
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.24);
-}
-
-.remove-btn:active {
-  transform: scale(0.96);
-}
-
-.remove-btn__icon {
-  width: 22px;
-  height: 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .empty {

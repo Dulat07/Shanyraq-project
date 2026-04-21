@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChatService } from '../../services/chat.service';
+import { ChatService, ChatState } from '../../services/chat.service';
 
 @Component({
   selector: 'app-chat-overlay',
@@ -12,10 +12,33 @@ import { ChatService } from '../../services/chat.service';
 })
 export class ChatOverlayComponent {
   messageText = '';
-  state$ = this.chatService.state$;
+  state: ChatState = {
+    isOpen: false,
+    user: null
+  };
+  isVisible = false;
+  isClosing = false;
   messages$ = this.chatService.messages$;
 
-  constructor(public chatService: ChatService) {}
+  constructor(public chatService: ChatService) {
+    this.chatService.state$.subscribe(state => {
+      this.state = state;
+
+      if (state.isOpen) {
+        this.isVisible = true;
+        this.isClosing = false;
+        return;
+      }
+
+      if (this.isVisible) {
+        this.isClosing = true;
+        setTimeout(() => {
+          this.isVisible = false;
+          this.isClosing = false;
+        }, 180);
+      }
+    });
+  }
 
   close() {
     this.chatService.close();

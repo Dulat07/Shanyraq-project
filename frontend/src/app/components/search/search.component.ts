@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { LanguageService } from '../../services/language.service';
+import { SearchFocusService } from '../../services/search-focus.service';
 
 
 @Component({
@@ -11,11 +13,16 @@ import { LanguageService } from '../../services/language.service';
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit, OnDestroy {
+  @ViewChild('searchInput') input!: ElementRef<HTMLInputElement>;
 
   lang: 'en' | 'ru' = 'en';
+  private focusSubscription?: Subscription;
 
-  constructor(private langService: LanguageService) {
+  constructor(
+    private langService: LanguageService,
+    private searchFocusService: SearchFocusService
+  ) {
     this.lang = this.langService.currentLang;
 
     this.langService.lang$.subscribe(l => {
@@ -30,6 +37,20 @@ export class SearchComponent {
   @Output() searchQueryChange = new EventEmitter<string>();
   @Output() categoryChange = new EventEmitter<'buy' | 'rent'>();
   @Output() propertyTypeChange = new EventEmitter<string>();
+
+  ngOnInit() {
+    this.focusSubscription = this.searchFocusService.focus$.subscribe(() => {
+      this.focusInput();
+    });
+  }
+
+  ngOnDestroy() {
+    this.focusSubscription?.unsubscribe();
+  }
+
+  focusInput() {
+    this.input.nativeElement.focus();
+  }
 
   onCategorySelect(value: 'buy' | 'rent') {
     this.categoryChange.emit(value);

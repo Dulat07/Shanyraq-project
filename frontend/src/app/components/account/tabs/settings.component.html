@@ -1,0 +1,28 @@
+<header class="tab-header">
+  <div>
+    <h2>Settings</h2>
+    <p>Basic profile information prepared for editable account settings.</p>
+  </div>
+</header>
+
+<dl class="settings-list" *ngIf="user$ | async as user">
+  <div>
+    <dt>Name</dt>
+    <dd>{{ user.name }}</dd>
+  </div>
+
+  <div>
+    <dt>Email</dt>
+    <dd>{{ user.email }}</dd>
+  </div>
+
+  <div>
+    <dt>Phone</dt>
+    <dd>{{ user.phone }}</dd>
+  </div>
+
+  <div>
+    <dt>City</dt>
+    <dd>{{ user.city }}</dd>
+  </div>
+</dl>

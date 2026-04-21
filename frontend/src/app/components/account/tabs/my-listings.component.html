@@ -1,0 +1,16 @@
+<header class="tab-header">
+  <div>
+    <h2>My Listings</h2>
+    <p>Manage properties published from your account.</p>
+  </div>
+
+  <a routerLink="/post" class="tab-action">Post listing</a>
+</header>
+
+<div class="account-grid" *ngIf="listings$ | async as listings">
+  <app-listing-card *ngFor="let listing of listings" [listing]="listing"></app-listing-card>
+</div>
+
+<p class="empty-state" *ngIf="(listings$ | async)?.length === 0">
+  You do not have active listings yet.
+</p>

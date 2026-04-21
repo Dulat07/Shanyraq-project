@@ -16,6 +16,7 @@ export class LoginComponent {
   username = '';
   password = '';
   lang: 'en' | 'ru' = 'en';
+  authMode: 'signin' | 'signup' = 'signin';
 
   constructor(
     private apiService: ApiService,
@@ -31,5 +32,18 @@ export class LoginComponent {
       next: () => this.router.navigate(['/home']),
       error: (err) => alert(this.lang === 'ru' ? 'Ошибка входа, проверьте ваши данные.' : 'Login failed, please check your credentials.')
     });
+  }
+
+  onAuthSubmit(): void {
+    if (this.authMode === 'signup') {
+      alert(this.lang === 'ru' ? 'Регистрация скоро будет доступна.' : 'Sign up will be available soon.');
+      return;
+    }
+
+    this.onLogin();
+  }
+
+  setAuthMode(mode: 'signin' | 'signup'): void {
+    this.authMode = mode;
   }
 }

@@ -9,13 +9,11 @@
 
 <div class="page-shell">
   <app-filters
-    [filters]="filters"
-    [cities]="cities"
-    (filtersChange)="onFiltersChange($event)"
-    (clear)="clearFilters()">
+    [cities]="(cities$ | async) || []"
+    (filtersChange)="onFiltersChange($event)">
   </app-filters>
 
-  <section class="listings-section">
+  <section class="listings-section" *ngIf="filteredListings$ | async as filteredListings">
     <div class="section-head">
       <div>
         <h2>

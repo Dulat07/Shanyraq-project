@@ -1,0 +1,91 @@
+.tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.tab-header h2 {
+  margin: 0;
+  color: #101828;
+  font-size: 26px;
+}
+
+.tab-header p {
+  margin: 6px 0 0;
+  color: #667085;
+}
+
+.tab-action {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #58e653;
+  color: #102a2d;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 18px;
+}
+
+.empty-state {
+  margin: 36px 0;
+  color: #667085;
+  text-align: center;
+  font-weight: 600;
+}
+
+.placeholder-panel {
+  padding: 28px;
+  border-radius: 18px;
+  background: #f5f7fb;
+  border: 1px solid #d8e0ef;
+}
+
+.placeholder-panel h3 {
+  margin: 0 0 8px;
+  color: #101828;
+}
+
+.placeholder-panel p {
+  margin: 0;
+  color: #667085;
+}
+
+.settings-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.settings-list div {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid #e5eaf3;
+}
+
+.settings-list dt {
+  color: #667085;
+  font-weight: 700;
+}
+
+.settings-list dd {
+  margin: 0;
+  color: #101828;
+}
+
+@media (max-width: 720px) {
+  .tab-header {
+    flex-direction: column;
+  }
+
+  .settings-list div {
+    grid-template-columns: 1fr;
+  }
+}

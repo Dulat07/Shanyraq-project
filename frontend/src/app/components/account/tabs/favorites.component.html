@@ -1,0 +1,14 @@
+<header class="tab-header">
+  <div>
+    <h2>Favorites</h2>
+    <p>Saved properties are ready here when you come back.</p>
+  </div>
+</header>
+
+<div class="account-grid" *ngIf="favorites.length > 0">
+  <app-listing-card *ngFor="let listing of favorites" [listing]="listing"></app-listing-card>
+</div>
+
+<p class="empty-state" *ngIf="favorites.length === 0">
+  No favorite listings yet.
+</p>

@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FavoritesService } from '../../services/favorites.service';
+import { ChatService } from '../../services/chat.service';
 import { LanguageService } from '../../services/language.service';
+import { SearchFocusService } from '../../services/search-focus.service';
 
 
 @Component({
@@ -19,8 +20,9 @@ export class HeaderComponent {
 
   constructor(
     private router: Router,
-    public fav: FavoritesService,
-    private langService: LanguageService
+    private langService: LanguageService,
+    private searchFocusService: SearchFocusService,
+    private chatService: ChatService
   ) {
     this.lang = this.langService.currentLang;
 
@@ -35,6 +37,24 @@ export class HeaderComponent {
 
   goToHome() {
     this.router.navigate(['/']);
+  }
+
+  openMessages() {
+    this.chatService.open({
+      name: this.lang === 'ru' ? 'Сообщения' : 'Messages',
+      avatar: 'https://ui-avatars.com/api/?name=Messages&background=d8e5e7&color=102a2d&bold=true'
+    });
+  }
+
+  onSearchClick() {
+    if (this.router.url !== '/home' && this.router.url !== '/') {
+      this.router.navigate(['/home']).then(() => {
+        setTimeout(() => this.searchFocusService.triggerFocus());
+      });
+      return;
+    }
+
+    this.searchFocusService.triggerFocus();
   }
 
   scrollToAbout() {
