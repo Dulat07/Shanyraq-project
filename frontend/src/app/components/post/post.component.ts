@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Listing } from '../../models/listing.model';
+import { Router } from '@angular/router'; // Добавили для перехода после создания
 import { LanguageService } from '../../services/language.service';
+import { ApiService } from '../../services/api.service'; // Наш мост к Django
 
 @Component({
   selector: 'app-post-form',
@@ -12,13 +13,8 @@ import { LanguageService } from '../../services/language.service';
   styleUrls: ['./post.component.css']
 })
 export class PostFormComponent {
-  @Output() addListing = new EventEmitter<Listing>();
+  // ИСПРАВЛЕНИЕ I4: Удалили @Output, так как страница самостоятельная
   lang: 'en' | 'ru' = 'en';
-
-  constructor(private langService: LanguageService) {
-    this.lang = this.langService.currentLang;
-    this.langService.lang$.subscribe(l => this.lang = l);
-  }
 
   form = {
     title: '',
@@ -32,37 +28,45 @@ export class PostFormComponent {
     type: 'Apartment' as 'Apartment' | 'House' | 'Commercial'
   };
 
+  constructor(
+        private readonly langService: LanguageService,
+        private readonly apiService: ApiService, // Внедряем сервис
+        private readonly router: Router          // Внедряем роутер
+  ) {
+    this.lang = this.langService.currentLang;
+    this.langService.lang$.subscribe(l => this.lang = l);
+  }
+
   submitForm() {
-    if (!this.form.title || !this.form.price || !this.form.city) return;
+    if (!this.form.title || !this.form.price || !this.form.city) {
+      alert(this.lang === 'ru' ? 'Пожалуйста, заполните основные поля' : 'Please fill in the required fields');
+      return;
+    }
 
-    const newListing: Listing = {
-      id: Date.now(),
+    // ИСПРАВЛЕНИЕ I2 & I4: Маппинг данных под модель Django
+    const propertyData = {
       title: this.form.title,
+      description: this.form.description || 'No description provided',
       price: this.form.price,
-      city: this.form.city,
-      image: this.form.image || 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=1200&q=80',
-      description: this.form.description || 'New listing added from frontend form.',
       rooms: this.form.rooms || 1,
-      area: this.form.area || 40,
+      location: this.form.city,       // В Django поле называется location
+      image_url: this.form.image,     // В Django поле называется image_url
       category: this.form.category,
-      type: this.form.type,
-      furnished: false,
-      parking: false,
-      createdAt: new Date().toISOString()
+      area: this.form.area || 0,
+      is_available: true
     };
 
-    this.addListing.emit(newListing);
-
-    this.form = {
-      title: '',
-      price: null,
-      city: '',
-      image: '',
-      description: '',
-      rooms: null,
-      area: null,
-      category: 'buy',
-      type: 'Apartment'
-    };
+    // Отправляем на бэкенд
+    this.apiService.createProperty(propertyData).subscribe({
+      next: (res) => {
+        console.log('Объявление создано:', res);
+          alert(this.lang === 'ru' ? 'Объявление успешно опубликовано!' : 'Listing published successfully!');
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        console.error('Ошибка при создании:', err);
+        alert(this.lang === 'ru' ? 'Ошибка при публикации. Проверьте авторизацию.' : 'Publishing failed. Check your authorization.');
+      }
+    });
   }
 }

@@ -20,6 +20,10 @@ class Property(models.Model):
     rooms = models.IntegerField()
     location = models.CharField(max_length=255)
     is_available = models.BooleanField(default=True)
+
+    # НОВЫЕ ПОЛЯ (Исправление I2)
+    image_url = models.URLField(max_length=500, blank=True, null=True) 
+    category = models.CharField(max_length=100, blank=True, null=True, default="House")
     
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owned_properties')
     agent = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='managed_properties')

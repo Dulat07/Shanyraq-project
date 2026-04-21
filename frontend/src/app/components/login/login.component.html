@@ -2,25 +2,27 @@
   <div class="auth-card glass-panel">
     <h2>{{ lang === 'ru' ? 'С возвращением' : 'Welcome Back' }}</h2>
     <p>{{ lang === 'ru' ? 'Войдите в свой аккаунт' : 'Sign in to your account' }}</p>
+    
     <div class="form-group">
       <div class="group">
-      <input required="" type="text" class="input">
-      <span class="highlight"></span>
-      <span class="bar"></span>
-      <label>{{ lang === 'ru' ? 'Имя пользователя' : 'Username' }}</label>
-    </div>    
-  </div>
+        <input required="" type="text" class="input" [(ngModel)]="username">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>{{ lang === 'ru' ? 'Имя пользователя' : 'Username' }}</label>
+      </div>    
+    </div>
 
     <div class="form-group">
       <div class="group">
-      <input required="" type="text" class="input">
-      <span class="highlight"></span>
-      <span class="bar"></span>
-      <label>{{ lang === 'ru' ? 'Пароль' : 'Password' }}</label>
+        <input required="" type="password" class="input" [(ngModel)]="password">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>{{ lang === 'ru' ? 'Пароль' : 'Password' }}</label>
       </div>
       <br>
       <button (click)="onLogin()" class="btn-primary asd" style="width: 100%;">
         {{ lang === 'ru' ? 'Войти' : 'Sign In' }}
       </button>
     </div>
+  </div>
 </div>
