@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'; // Добавили HttpHeaders
 import { catchError, throwError, Observable, BehaviorSubject, tap } from 'rxjs';
 
 @Injectable({
@@ -13,11 +13,20 @@ export class ApiService {
 
   constructor(private readonly http: HttpClient) { }
 
+  // Проверка наличия токена
   private hasToken(): boolean {
     return !!localStorage.getItem('token');
   }
 
-  // ИСПРАВЛЕНИЕ R2: Теперь мы видим детали ошибки в консоли
+  // Вспомогательный метод для создания заголовков с токеном
+  private getAuthHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Token ${token}` // ИСПРАВЛЕНИЕ C4: заменяем Bearer на Token
+    });
+  }
+
+  // Обработка ошибок
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'An error occurred';
     if (error.error instanceof ErrorEvent) {
@@ -29,6 +38,7 @@ export class ApiService {
     return throwError(() => new Error(errorMessage));
   }
 
+  // Авторизация
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login/`, credentials).pipe(
       tap((res: any) => {
@@ -41,11 +51,12 @@ export class ApiService {
     );
   }
 
-  // ИСПРАВЛЕНИЕ C7: Добавляем вызов бэкенда при выходе (опционально, но правильно)
+  // Выход из системы
   logout(): void {
-    this.http.post(`${this.apiUrl}/logout/`, {}).subscribe({
+    const headers = this.getAuthHeaders();
+    this.http.post(`${this.apiUrl}/logout/`, {}, { headers }).subscribe({
       next: () => this.clearSession(),
-      error: () => this.clearSession() // Даже если бэк упал, чистим локально
+      error: () => this.clearSession() 
     });
   }
 
@@ -54,41 +65,47 @@ export class ApiService {
     this.loggedInSubject.next(false);
   }
 
-  // ИСПРАВЛЕНИЕ I1: Получить ВСЕ объявления
+  // Получить ВСЕ объявления (обычно доступно всем)
   getProperties(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/properties/`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // ИСПРАВЛЕНИЕ I3: Получить ОДНО объявление по ID
+  // Получить ОДНО объявление
   getProperty(id: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/properties/${id}/`).pipe(
       catchError(this.handleError)
     );
   }
 
-  // ИСПРАВЛЕНИЕ I4: Создать новое объявление
+  // СОЗДАНИЕ (Теперь с токеном!)
   createProperty(propertyData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/properties/create/`, propertyData).pipe(
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/properties/create/`, propertyData, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
+  // Поиск
   searchProperties(query: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/properties/?search=${query}`).pipe(
       catchError(this.handleError)
     );
   }
 
+  // УДАЛЕНИЕ (Теперь с токеном!)
   deleteProperty(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/properties/${id}/update/`).pipe(
+    const headers = this.getAuthHeaders();
+    return this.http.delete(`${this.apiUrl}/properties/${id}/update/`, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
+  // БРОНИРОВАНИЕ (Теперь с токеном!)
   createBooking(bookingData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/bookings/`, bookingData).pipe(
+    const headers = this.getAuthHeaders();
+    return this.http.post(`${this.apiUrl}/bookings/`, bookingData, { headers }).pipe(
       catchError(this.handleError)
     );
   }

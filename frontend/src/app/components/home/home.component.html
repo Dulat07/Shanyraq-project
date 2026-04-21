@@ -1,62 +1,31 @@
-<app-search
-  [searchQuery]="searchQuery"
-  [category]="category"
-  [propertyType]="propertyType"
-  (searchQueryChange)="onSearchQueryChange($event)"
-  (categoryChange)="onCategoryChange($event)"
-  (propertyTypeChange)="onTypeChange($event)">
-</app-search>
+<main class="home-wrapper">
+  <app-search 
+    [query]="searchQuery" 
+    (queryChange)="onSearchQueryChange($any($event))">
+  </app-search>
 
-<div class="page-shell">
-  <app-filters
+  <app-filters 
+    [cities]="cities" 
     [filters]="filters"
-    [cities]="cities"
     (filtersChange)="onFiltersChange($event)"
     (clear)="clearFilters()">
   </app-filters>
 
-  <section class="listings-section">
-    <div class="section-head">
-      <div>
-        <h2>
-          {{ lang === 'ru' ? 'Доступные объявления' : 'Available Properties' }}
-        </h2>
-        <p>
-          {{ filteredListings.length }}
-          {{ lang === 'ru' ? 'объявлений найдено' : 'results found' }}
-        </p>
-      </div>
+  <section class="results-container" *ngIf="filteredListings.length > 0; else emptyState">
+    <div class="results-info">
+      <h3>
+        {{ lang === 'ru' ? 'Найдено вариантов' : 'Properties found' }}: 
+        <span>{{ filteredListings.length }}</span>
+      </h3>
     </div>
 
     <app-listing-list [listings]="filteredListings"></app-listing-list>
   </section>
 
-  <section id="about" class="about-section">
-    <div class="about-section__header">
-      <span class="about-section__badge">{{ lang === 'ru' ? 'О нас' : 'About Us' }}</span>
-      <h2>{{ lang === 'ru' ? 'Помогаем людям быстрее находить подходящее место' : 'Helping people find the right place faster' }}</h2>
-      <p>
-        {{ lang === 'ru'
-          ? 'Наш маркетплейс помогает находить квартиры, дома и коммерческие помещения с удобным поиском и понятной подачей объявлений.'
-          : 'Our marketplace helps users discover apartments, houses, and commercial spaces with a simple search experience and clean listing presentation.' }}
-      </p>
+  <ng-template #emptyState>
+    <div class="no-results">
+      <p>{{ lang === 'ru' ? 'Ничего не найдено по вашим критериям' : 'No properties match your criteria' }}</p>
+      <button (click)="clearFilters()">{{ lang === 'ru' ? 'Сбросить фильтры' : 'Reset filters' }}</button>
     </div>
-
-    <div class="about-grid">
-      <div class="about-card">
-        <h3>{{ lang === 'ru' ? 'Быстрый поиск' : 'Fast Search' }}</h3>
-        <p>{{ lang === 'ru' ? 'Быстрые фильтры и понятные категории помогают находить подходящие объекты за секунды.' : 'Quick filters and clear categories help users find relevant properties in seconds.' }}</p>
-      </div>
-
-      <div class="about-card">
-        <h3>{{ lang === 'ru' ? 'Надежные объявления' : 'Reliable Listings' }}</h3>
-        <p>{{ lang === 'ru' ? 'Структурированные карточки и детали объектов делают просмотр удобным и вызывающим доверие.' : 'Structured cards and property details make browsing feel trustworthy and easy.' }}</p>
-      </div>
-
-      <div class="about-card">
-        <h3>{{ lang === 'ru' ? 'Простое бронирование' : 'Easy Booking' }}</h3>
-        <p>{{ lang === 'ru' ? 'Привычный формат маркетплейса помогает легко перейти от поиска к действию.' : 'A simple and familiar marketplace layout helps users move from discovery to action.' }}</p>
-      </div>
-    </div>
-  </section>
-</div>
+  </ng-template>
+</main>

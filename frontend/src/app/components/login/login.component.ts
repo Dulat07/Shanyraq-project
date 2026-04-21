@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { LanguageService } from '../../services/language.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -16,6 +17,7 @@ export class LoginComponent {
   username = '';
   password = '';
   lang: 'en' | 'ru' = 'en';
+  authMode: 'signin' | 'signup' = 'signin';
 
   constructor(
     private apiService: ApiService,
@@ -32,4 +34,23 @@ export class LoginComponent {
       error: (err) => alert(this.lang === 'ru' ? 'Ошибка входа, проверьте ваши данные.' : 'Login failed, please check your credentials.')
     });
   }
+
+  onAuthSubmit(): void {
+    if (this.authMode === 'signup') {
+      alert(this.lang === 'ru' ? 'Регистрация скоро будет доступна.' : 'Sign up will be available soon.');
+      return;
+    }
+
+    this.onLogin();
+  }
+
+  setAuthMode(mode: 'signin' | 'signup'): void {
+    this.authMode = mode;
+  }
 }
+tap((res: any) => {
+  if(res.token) {
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('userId', res.user_id); // Сохраняем ID владельца
+  }
+})

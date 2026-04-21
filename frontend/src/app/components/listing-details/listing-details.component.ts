@@ -5,14 +5,13 @@ import { Listing } from '../../models/listing.model';
 import { FavoritesService } from '../../services/favorites.service';
 import { LanguageService } from '../../services/language.service';
 import { RecentService } from '../../services/recent.service';
-import { ChatOverlayComponent } from '../chat-overlay/chat-overlay.component';
 import { ChatService } from '../../services/chat.service';
 import { ApiService } from '../../services/api.service'; 
 
 @Component({
   selector: 'app-listing-details',
   standalone: true,
-  imports: [CommonModule, ChatOverlayComponent],
+  imports: [CommonModule],
   templateUrl: './listing-details.component.html',
   styleUrls: ['./listing-details.component.css']
 })

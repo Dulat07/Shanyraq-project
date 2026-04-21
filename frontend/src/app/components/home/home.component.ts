@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Listing } from '../../models/listing.model';
 import { SearchComponent } from '../../components/search/search.component';
-import { FiltersComponent, FilterState } from '../../components/filters/filters.component';
+import { FiltersComponent } from '../../components/filters/filters.component';
+import { Filters } from '../../models/filters.model'; 
 import { ListingListComponent } from '../../components/listing-list/listing-list.component';
 import { LanguageService } from '../../services/language.service';
 import { ApiService } from '../../services/api.service';
+import { FiltersService } from '../../services/filters.service'; 
 
 @Component({
   selector: 'app-home',
@@ -14,7 +16,7 @@ import { ApiService } from '../../services/api.service';
     CommonModule,
     SearchComponent,
     FiltersComponent,
-    ListingListComponent,
+    ListingListComponent
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -24,19 +26,26 @@ export class HomeComponent implements OnInit {
   allListings: Listing[] = [];
   filteredListings: Listing[] = [];
 
-  // Состояния фильтров
   searchQuery = '';
   category: 'buy' | 'rent' = 'buy';
-  propertyType = ''; // ДОБАВИЛИ ЭТУ ПЕРЕМЕННУЮ
+  propertyType = '';
 
-  filters: FilterState = {
-    minPrice: null, maxPrice: null, city: '', rooms: '',
-    minArea: null, maxArea: null, furnished: '', parking: '', sortBy: ''
+  filters: Filters = {
+    priceMin: undefined,
+    priceMax: undefined,
+    city: '',
+    rooms: undefined,
+    areaMin: undefined,
+    areaMax: undefined,
+    furnished: undefined,
+    parking: undefined,
+    sortBy: ''
   };
 
   constructor(
-    private langService: LanguageService,
-    private apiService: ApiService
+    private readonly langService: LanguageService,
+    private readonly apiService: ApiService,
+    private readonly filtersService: FiltersService 
   ) {
     this.lang = this.langService.currentLang;
     this.langService.lang$.subscribe(l => this.lang = l);
@@ -47,7 +56,6 @@ export class HomeComponent implements OnInit {
   }
 
   loadProperties() {
-    // В api.service.ts мы уже убрали аргумент (id: number), теперь ошибки тут не будет
     this.apiService.getProperties().subscribe({
       next: (data: any[]) => {
         this.allListings = data.map(item => ({
@@ -71,36 +79,45 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  // Геттер для городов (используется в HTML)
   get cities(): string[] {
     return [...new Set(this.allListings.map(item => item.city))];
   }
 
-  // --- ИСПРАВЛЕНИЯ ОШИБОК NG9 (Методы) ---
-
   onSearchQueryChange(value: string) {
     this.searchQuery = value;
-    this.applyFilters();
+    this.filtersService.updateSearch(value); 
+    this.applyFilters(); 
   }
 
   onCategoryChange(value: 'buy' | 'rent') {
     this.category = value;
+    this.filtersService.updateCategory(value);
     this.applyFilters();
   }
 
-  onTypeChange(value: string) { // ДОБАВИЛИ ЭТОТ МЕТОД
+  onTypeChange(value: string) {
     this.propertyType = value;
     this.applyFilters();
   }
 
-  onFiltersChange(value: FilterState) {
+  onFiltersChange(value: Filters) {
     this.filters = value;
     this.applyFilters();
   }
 
-  clearFilters() { // ДОБАВИЛИ ЭТОТ МЕТОД
+  clearFilters() {
     this.filters = {
-      minPrice: null, maxPrice: null, city: '', rooms: '',
-      minArea: null, maxArea: null, furnished: '', parking: '', sortBy: ''
+      priceMin: undefined,
+      priceMax: undefined,
+      city: '',
+      rooms: undefined,
+      areaMin: undefined,
+      areaMax: undefined,
+      propertyType: '',
+      furnished: false,
+      parking: false,
+      sortBy: ''
     };
     this.searchQuery = '';
     this.propertyType = '';
@@ -111,30 +128,22 @@ export class HomeComponent implements OnInit {
   applyFilters() {
     let result = [...this.allListings];
 
-    // 1. Фильтр по категории
-    //result = result.filter(item => item.category === this.category);
+    if (this.category) {
+      result = result.filter(item => item.category === this.category);
+    }
 
-    // 2. Поиск по названию
     if (this.searchQuery.trim()) {
       const query = this.searchQuery.toLowerCase();
       result = result.filter(item => item.title.toLowerCase().includes(query));
     }
 
-    // 3. Фильтр по типу (Квартира/Дом)
     if (this.propertyType) {
       result = result.filter(item => item.type === this.propertyType);
     }
 
-    // 4. Фильтры по цене
-    if (this.filters.minPrice !== null) result = result.filter(i => i.price >= this.filters.minPrice!);
-    if (this.filters.maxPrice !== null) result = result.filter(i => i.price <= this.filters.maxPrice!);
-
-    // 5. Фильтр по городу
+    if (this.filters.priceMin) result = result.filter(i => i.price >= this.filters.priceMin!);
+    if (this.filters.priceMax) result = result.filter(i => i.price <= this.filters.priceMax!);
     if (this.filters.city) result = result.filter(i => i.city === this.filters.city);
-
-    // 6. Сортировка
-    if (this.filters.sortBy === 'priceAsc') result.sort((a, b) => a.price - b.price);
-    if (this.filters.sortBy === 'priceDesc') result.sort((a, b) => b.price - a.price);
 
     this.filteredListings = result;
   }

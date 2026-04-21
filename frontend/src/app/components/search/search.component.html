@@ -17,12 +17,14 @@
     <div class="hero-card">
       <div class="category-toggle">
         <button
+          type="button"
           [class.active]="category === 'buy'"
           (click)="onCategorySelect('buy')">
           {{ lang === 'ru' ? 'Купить' : 'Buy' }}
         </button>
 
         <button
+          type="button"
           [class.active]="category === 'rent'"
           (click)="onCategorySelect('rent')">
           {{ lang === 'ru' ? 'Аренда' : 'Rent' }}
@@ -31,8 +33,9 @@
 
       <div class="search-row">
         <input
+          #searchInput
           type="text"
-          [(ngModel)]="searchQuery"
+          [(ngModel)]="query"
           (ngModelChange)="onQueryChange()"
           [placeholder]="lang === 'ru' ? 'Поиск по названию...' : 'Search by title...'"
         />

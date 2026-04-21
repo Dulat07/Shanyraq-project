@@ -1,0 +1,14 @@
+<header class="tab-header">
+  <div>
+    <h2>Recently Viewed</h2>
+    <p>Your latest property views.</p>
+  </div>
+</header>
+
+<div class="account-grid" *ngIf="recent.length > 0">
+  <app-listing-card *ngFor="let listing of recent" [listing]="listing"></app-listing-card>
+</div>
+
+<p class="empty-state" *ngIf="recent.length === 0">
+  Recently viewed listings will appear here.
+</p>

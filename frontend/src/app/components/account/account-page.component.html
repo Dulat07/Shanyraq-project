@@ -1,0 +1,28 @@
+<main class="account-page" *ngIf="user$ | async as user">
+  <section class="account-hero">
+    <div class="account-avatar">
+      {{ user.name.charAt(0) }}
+    </div>
+
+    <div>
+      <p class="account-kicker">Account</p>
+      <h1>{{ user.name }}</h1>
+      <p>{{ user.email }}</p>
+    </div>
+  </section>
+
+  <nav class="account-tabs" aria-label="Account sections">
+    <a
+      *ngFor="let tab of tabs"
+      [routerLink]="tab.path"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: tab.path === '/account' }"
+    >
+      {{ tab.label }}
+    </a>
+  </nav>
+
+  <section class="account-content">
+    <router-outlet></router-outlet>
+  </section>
+</main>

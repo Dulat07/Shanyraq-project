@@ -1,9 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; // Добавили OnInit
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { FavoritesService } from '../../services/favorites.service';
+import { ChatService } from '../../services/chat.service';
 import { LanguageService } from '../../services/language.service';
-import { ApiService } from '../../services/api.service'; // Импорт сервиса
+import { ApiService } from '../../services/api.service';
+import { SearchFocusService } from '../../services/search-focus.service';
+// Если у вас есть сервис избранного, импортируй его здесь:
+// import { FavoritesService } from '../../services/favorites.service'; 
 
 @Component({
   selector: 'app-header',
@@ -18,16 +21,18 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private router: Router,
-    public fav: FavoritesService,
     private langService: LanguageService,
-    private apiService: ApiService // Внедряем ApiService
+    private apiService: ApiService,
+    private searchFocusService: SearchFocusService,
+    private chatService: ChatService,
+    // public fav: FavoritesService // Раскомментируй, если используете Favorites
   ) {
     this.lang = this.langService.currentLang;
     this.langService.lang$.subscribe(l => this.lang = l);
   }
 
   ngOnInit(): void {
-    // ИСПРАВЛЕНИЕ C6: Следим за статусом авторизации в реальном времени
+    // Твоя логика отслеживания статуса входа
     this.apiService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
@@ -39,6 +44,23 @@ export class HeaderComponent implements OnInit {
 
   goToHome() {
     this.router.navigate(['/']);
+  }
+
+  openMessages() {
+    this.chatService.open({
+      name: this.lang === 'ru' ? 'Сообщения' : 'Messages',
+      avatar: 'https://ui-avatars.com/api/?name=Messages&background=d8e5e7&color=102a2d&bold=true'
+    });
+  }
+
+  onSearchClick() {
+    if (this.router.url !== '/home' && this.router.url !== '/') {
+      this.router.navigate(['/home']).then(() => {
+        setTimeout(() => this.searchFocusService.triggerFocus());
+      });
+      return;
+    }
+    this.searchFocusService.triggerFocus();
   }
 
   scrollToAbout() {
@@ -68,7 +90,6 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
-    // ИСПРАВЛЕНИЕ C7: Удаляем токен через сервис и уходим на логин
     this.apiService.logout();
     this.router.navigate(['/login']);
   }

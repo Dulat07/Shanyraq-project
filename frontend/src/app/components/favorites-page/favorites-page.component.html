@@ -43,7 +43,7 @@
         <app-listing-card [listing]="property"></app-listing-card>
 
         <button
-          class="remove-btn"
+          class="remove-btn remove-action-btn"
           type="button"
           (click)="remove(property)"
           [attr.aria-label]="lang === 'ru' ? 'Удалить из избранного' : 'Remove from favorites'"
@@ -51,7 +51,7 @@
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            class="remove-btn__icon"
+            class="remove-action-btn__icon"
             aria-hidden="true"
           >
             <path d="M6 6L18 18M18 6L6 18"></path>
