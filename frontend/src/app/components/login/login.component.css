@@ -1,140 +1,125 @@
-.auth-wrapper {
-  min-height: calc(100vh - 80px);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 1fr);
-  background:
-    linear-gradient(135deg, rgba(14, 30, 45, 0.96), rgba(52, 70, 145, 0.92) 48%, rgba(91, 63, 157, 0.86)),
-    linear-gradient(90deg, rgba(91, 216, 89, 0.18), rgba(255, 255, 255, 0));
-  background-size: 140% 140%;
-  animation: authBackgroundShift 12s ease-in-out infinite;
-}
-
-.auth-visual,
-.auth-form-panel {
-  min-width: 0;
+.auth-page {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(2rem, 5vw, 5rem);
+  min-height: 100vh;
 }
 
 .auth-visual {
-  position: relative;
-  overflow: hidden;
+  flex: 1;
+  background: #172a4e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background-image:
+    radial-gradient(circle at top right, rgba(218, 15, 232, 0.2), transparent 80%),
+    radial-gradient(circle at bottom left, rgba(21, 0, 255, 0.1), transparent 30%);
+  background-attachment: fixed;
 }
 
-.auth-visual-placeholder {
-  position: relative;
-  z-index: 1;
-  width: min(100%, 560px);
-  min-height: 620px;
-  border-radius: 16px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.03)),
-    rgba(15, 23, 42, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+.visual-placeholder {
+  width: 80%;
+  height: 80%;
+  min-height: 420px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 18px;
 }
 
-.auth-form-panel {
-  background: rgba(8, 18, 32, 0.18);
+.auth-form-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1c274a, #2d3e6f);
+  padding: 40px;
+  border-left: 5px solid rgb(226, 226, 226);
 }
 
 .auth-card {
-  width: min(100%, 440px);
-  padding: clamp(2rem, 4vw, 3.25rem);
-  text-align: left;
-  background: rgba(22, 34, 55, 0.82);
+  width: 380px;
+  padding: 40px;
   border-radius: 16px;
-  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
-}
-
-.auth-heading {
-  margin-bottom: 2.35rem;
+  background: #111827;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
   text-align: center;
 }
 
-.auth-kicker {
-  margin: 0 0 0.65rem;
+.auth-label {
   color: #5bd859;
-  font-size: 0.78rem;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0;
-  text-transform: uppercase;
+  box-shadow: 0 0 0px rgba(608,990,90, 0.9);
 }
 
-.auth-heading h2 {
+.visual-placeholder .auth-label {
+  margin: 0;
+  color: #63df58;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: 6px;
+  text-shadow: 0 0 18px rgba(99, 223, 88, 0.35);
+}
+
+.auth-card h1 {
   margin: 0;
   color: #f8fafc;
-  font-size: 2.35rem;
-  line-height: 1.05;
-  font-weight: 800;
+  font-size: 32px;
+  line-height: 1.1;
 }
 
-.auth-heading p:not(.auth-kicker) {
-  margin: 0.8rem 0 0;
-  color: #cbd5e1;
-  font-size: 1rem;
+.auth-subtitle {
+  margin: 10px 0 28px;
+  color: #94a3b8;
+  font-size: 15px;
 }
 
-.form-group {
-  margin-bottom: 1.35rem;
-}
-
-.form-group label {
+.field-label {
   display: block;
-  margin-bottom: 0.55rem;
+  margin-top: 14px;
   color: #cbd5e1;
-  font-size: 0.92rem;
+  font-size: 13px;
   font-weight: 600;
+  text-align: left;
 }
 
 .input {
   width: 100%;
-  height: 52px;
   box-sizing: border-box;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 10px;
-  background: rgba(15, 23, 42, 0.58);
-  color: #ffffff;
-  padding: 0 1rem;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid #2a3a5e;
+  background: #0b1220;
+  color: #f8fafc;
   font: inherit;
   outline: none;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
 
 .input:focus {
   border-color: #5bd859;
-  background: rgba(15, 23, 42, 0.76);
-  box-shadow: 0 0 0 3px rgba(91, 216, 89, 0.18);
 }
 
 .auth-submit {
   width: 100%;
-  min-height: 52px;
-  margin-top: 0.9rem;
+  padding: 12px;
+  margin-top: 24px;
   border: 0;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #5bd859, #36b84c);
-  color: #ffffff;
+  border-radius: 8px;
+  background: #5bd859;
+  color: #0b1220;
   font-weight: 800;
-  box-shadow: 0 14px 28px rgba(91, 216, 89, 0.25);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-}
-
-.auth-submit:hover {
-  transform: scale(1.03);
-  filter: brightness(1.03);
-  box-shadow: 0 18px 34px rgba(91, 216, 89, 0.32);
 }
 
 .auth-switch {
-  margin: 1.65rem 0 0;
-  color: #cbd5e1;
-  text-align: center;
-  font-size: 0.95rem;
+  margin: 22px 0 0;
+  color: #94a3b8;
+  font-size: 14px;
 }
 
 .auth-switch button {
@@ -144,69 +129,92 @@
   color: #5bd859;
   font: inherit;
   font-weight: 800;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.auth-switch button:hover {
-  color: #89f086;
-}
-
-@keyframes authBackgroundShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
 }
 
 @media (max-width: 860px) {
-  .auth-wrapper {
-    grid-template-columns: 1fr;
+  .auth-page {
+    min-height: calc(100vh - 80px);
   }
 
   .auth-visual {
     display: none;
   }
 
-  .auth-form-panel {
-    min-height: calc(100vh - 80px);
-    padding: 1.25rem;
+  .auth-form-container {
+    padding: 24px;
   }
 
-  .auth-heading h2 {
-    font-size: 2rem;
+  .auth-card {
+    width: 100%;
+    max-width: 380px;
   }
 }
 
-/* From Uiverse.io by csemszepp */ 
-.container {
-  width: 50%;
-  height: 50%;
-  --s: 82px;
-  --c1: #339;
-  --c2: #899;
-  --c3: #349;
+.grid-loader {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  transform: rotate(45deg);
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out forwards;
+}
 
-  --_g: var(--c3) 0 120deg, #0000 0;
-  background: conic-gradient(from -60deg at 50% calc(100% / 3), var(--_g)),
-    conic-gradient(from 120deg at 50% calc(200% / 3), var(--_g)),
-    conic-gradient(
-      from 60deg at calc(200% / 3),
-      var(--c3) 60deg,
-      var(--c2) 0 120deg,
-      #0000 0
-    ),
-    conic-gradient(from 180deg at calc(100% / 3), var(--c1) 60deg, var(--_g)),
-    linear-gradient(
-      90deg,
-      var(--c1) calc(100% / 6),
-      var(--c2) 0 50%,
-      var(--c1) 0 calc(500% / 6),
-      var(--c2) 0
-    );
-  background-size: calc(1.732 * var(--s)) var(--s);
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+.cube {
+  width: 70px;
+  height: 70px;
+  background: rgb(69, 153, 17);
+  animation: cubeScale 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  box-shadow: 0 0 15px rgba(108,190,900, 0.8);
+  transform: scale(0);
+  opacity: 1;
+}
+
+@keyframes cubeScale {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}
+
+/* Staggered animation delays */
+.cube:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(4) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(5) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(6) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(7) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(8) {
+  animation-delay: 0.2s;
+}
+.cube:nth-child(9) {
+  animation-delay: 0.2s;
 }
