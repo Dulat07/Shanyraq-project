@@ -1,0 +1,59 @@
+<ng-container *ngIf="state$ | async as state">
+  <div class="chat-backdrop" *ngIf="state.isOpen" (click)="close()">
+    <section class="chat-modal" (click)="$event.stopPropagation()">
+      <header class="chat-header">
+        <div class="chat-user">
+          <img
+            class="chat-avatar"
+            [src]="state.user?.avatar"
+            [alt]="state.user?.name"
+          />
+
+          <div>
+            <h3>{{ state.user?.name }}</h3>
+            <p>Active now</p>
+          </div>
+        </div>
+
+        <button class="chat-close" type="button" (click)="close()" aria-label="Close chat">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 6L18 18M18 6L6 18"></path>
+          </svg>
+        </button>
+      </header>
+
+      <div class="chat-body">
+        <div
+          *ngFor="let message of messages$ | async"
+          class="message-row"
+          [class.message-row--me]="message.sender === 'me'"
+        >
+          <div class="message-bubble">
+            <p>{{ message.text }}</p>
+            <span>{{ message.timestamp | date:'shortTime' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <footer class="chat-footer">
+        <button class="chat-icon-btn" type="button" aria-label="Emoji">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M8 10h.01M16 10h.01M8.5 15c1.6 1.4 5.4 1.4 7 0"></path>
+          </svg>
+        </button>
+
+        <input
+          type="text"
+          [(ngModel)]="messageText"
+          (keyup.enter)="sendMessage()"
+          placeholder="Message..."
+        />
+
+        <button class="chat-send" type="button" (click)="sendMessage()">
+          Send
+        </button>
+      </footer>
+    </section>
+  </div>
+</ng-container>

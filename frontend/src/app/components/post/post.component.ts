@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Listing } from '../../models/listing.model';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-post-form',
@@ -12,6 +13,12 @@ import { Listing } from '../../models/listing.model';
 })
 export class PostFormComponent {
   @Output() addListing = new EventEmitter<Listing>();
+  lang: 'en' | 'ru' = 'en';
+
+  constructor(private langService: LanguageService) {
+    this.lang = this.langService.currentLang;
+    this.langService.lang$.subscribe(l => this.lang = l);
+  }
 
   form = {
     title: '',

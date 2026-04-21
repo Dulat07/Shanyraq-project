@@ -2,64 +2,66 @@
   <div class="filters-grid">
     <input
       type="number"
-      placeholder="Min price"
+      [placeholder]="lang === 'ru' ? 'Мин. цена' : 'Min price'"
       [(ngModel)]="filters.minPrice"
       (ngModelChange)="emitChanges()"
     />
 
     <input
       type="number"
-      placeholder="Max price"
+      [placeholder]="lang === 'ru' ? 'Макс. цена' : 'Max price'"
       [(ngModel)]="filters.maxPrice"
       (ngModelChange)="emitChanges()"
     />
 
     <select [(ngModel)]="filters.city" (change)="emitChanges()">
-      <option value="">All cities</option>
+      <option value="">{{ lang === 'ru' ? 'Все города' : 'All cities' }}</option>
       <option *ngFor="let city of cities" [value]="city">{{ city }}</option>
     </select>
 
     <select [(ngModel)]="filters.rooms" (change)="emitChanges()">
-      <option value="">Any rooms</option>
-      <option value="1">1 room</option>
-      <option value="2">2 rooms</option>
-      <option value="3">3 rooms</option>
-      <option value="3+">3+ rooms</option>
+      <option value="">{{ lang === 'ru' ? 'Любое количество комнат' : 'Any rooms' }}</option>
+      <option value="1">{{ lang === 'ru' ? '1 комната' : '1 room' }}</option>
+      <option value="2">{{ lang === 'ru' ? '2 комнаты' : '2 rooms' }}</option>
+      <option value="3">{{ lang === 'ru' ? '3 комнаты' : '3 rooms' }}</option>
+      <option value="3+">{{ lang === 'ru' ? '3+ комнаты' : '3+ rooms' }}</option>
     </select>
 
     <input
       type="number"
-      placeholder="Min area"
+      [placeholder]="lang === 'ru' ? 'Мин. площадь' : 'Min area'"
       [(ngModel)]="filters.minArea"
       (ngModelChange)="emitChanges()"
     />
 
     <input
       type="number"
-      placeholder="Max area"
+      [placeholder]="lang === 'ru' ? 'Макс. площадь' : 'Max area'"
       [(ngModel)]="filters.maxArea"
       (ngModelChange)="emitChanges()"
     />
 
     <select [(ngModel)]="filters.furnished" (change)="emitChanges()">
-      <option value="">Furnished: any</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+      <option value="">{{ lang === 'ru' ? 'Мебель: неважно' : 'Furnished: any' }}</option>
+      <option value="yes">{{ lang === 'ru' ? 'Да' : 'Yes' }}</option>
+      <option value="no">{{ lang === 'ru' ? 'Нет' : 'No' }}</option>
     </select>
 
     <select [(ngModel)]="filters.parking" (change)="emitChanges()">
-      <option value="">Parking: any</option>
-      <option value="yes">Yes</option>
-      <option value="no">No</option>
+      <option value="">{{ lang === 'ru' ? 'Парковка: неважно' : 'Parking: any' }}</option>
+      <option value="yes">{{ lang === 'ru' ? 'Да' : 'Yes' }}</option>
+      <option value="no">{{ lang === 'ru' ? 'Нет' : 'No' }}</option>
     </select>
 
     <select [(ngModel)]="filters.sortBy" (change)="emitChanges()">
-      <option value="">Sort by</option>
-      <option value="priceAsc">Price low → high</option>
-      <option value="priceDesc">Price high → low</option>
-      <option value="newest">Newest</option>
+      <option value="">{{ lang === 'ru' ? 'Сортировать по' : 'Sort by' }}</option>
+      <option value="priceAsc">{{ lang === 'ru' ? 'Цена: по возрастанию' : 'Price low → high' }}</option>
+      <option value="priceDesc">{{ lang === 'ru' ? 'Цена: по убыванию' : 'Price high → low' }}</option>
+      <option value="newest">{{ lang === 'ru' ? 'Новые' : 'Newest' }}</option>
     </select>
 
-    <button class="clear-btn" (click)="clearFilters()">Clear filters</button>
+    <button class="clear-btn" (click)="clearFilters()">
+      {{ lang === 'ru' ? 'Очистить фильтры' : 'Clear filters' }}
+    </button>
   </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-property-details',
@@ -15,12 +16,17 @@ export class PropertyDetailsComponent implements OnInit {
   propertyId: number | null = null;
   bookingDate = '';
   isSubmitting = false;
+  lang: 'en' | 'ru' = 'en';
 
   constructor(
     private route: ActivatedRoute, 
     public router: Router,
-    private apiService: ApiService
-  ) {}
+    private apiService: ApiService,
+    private langService: LanguageService
+  ) {
+    this.lang = this.langService.currentLang;
+    this.langService.lang$.subscribe(l => this.lang = l);
+  }
 
   ngOnInit(): void {
     this.propertyId = Number(this.route.snapshot.paramMap.get('id'));
@@ -28,7 +34,7 @@ export class PropertyDetailsComponent implements OnInit {
 
   onBook(): void {
     if (!this.bookingDate) {
-      alert('Please select a booking date.');
+      alert(this.lang === 'ru' ? 'Пожалуйста, выберите дату бронирования.' : 'Please select a booking date.');
       return;
     }
     
@@ -41,11 +47,11 @@ export class PropertyDetailsComponent implements OnInit {
 
     this.apiService.createBooking(payload).subscribe({
       next: () => {
-        alert('Booking successful!');
+        alert(this.lang === 'ru' ? 'Бронирование успешно!' : 'Booking successful!');
         this.router.navigate(['/home']);
       },
       error: () => {
-        alert('Booking failed. Please login first.');
+        alert(this.lang === 'ru' ? 'Не удалось забронировать. Сначала войдите в аккаунт.' : 'Booking failed. Please login first.');
         this.isSubmitting = false;
       }
     });

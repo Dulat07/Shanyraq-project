@@ -1,13 +1,17 @@
 <div *ngIf="listings.length > 0; else emptyState" class="listing-grid">
-  <app-listing-card
-    *ngFor="let listing of listings"
-    [listing]="listing">
-  </app-listing-card>
+
+  <div *ngFor="let listing of listings" style="position: relative;">
+
+    <!-- карточка -->
+    <app-listing-card [listing]="listing"></app-listing-card>
+
+  </div>
+
 </div>
 
 <ng-template #emptyState>
   <div class="empty-state">
-    <h3>No properties found</h3>
-    <p>Try changing your filters or search text.</p>
+    <h3>{{ lang === 'ru' ? 'Объекты не найдены' : 'No properties found' }}</h3>
+    <p>{{ lang === 'ru' ? 'Попробуйте изменить фильтры или текст поиска.' : 'Try changing your filters or search text.' }}</p>
   </div>
 </ng-template>

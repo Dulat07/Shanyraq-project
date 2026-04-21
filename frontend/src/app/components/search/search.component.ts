@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LanguageService } from '../../services/language.service';
+
 
 @Component({
   selector: 'app-search',
@@ -10,6 +12,17 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./search.component.css']
 })
 export class SearchComponent {
+
+  lang: 'en' | 'ru' = 'en';
+
+  constructor(private langService: LanguageService) {
+    this.lang = this.langService.currentLang;
+
+    this.langService.lang$.subscribe(l => {
+      this.lang = l;
+    });
+  }
+  
   @Input() searchQuery = '';
   @Input() category: 'buy' | 'rent' = 'buy';
   @Input() propertyType = '';

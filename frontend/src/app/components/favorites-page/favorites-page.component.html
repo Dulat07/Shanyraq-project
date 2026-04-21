@@ -1,0 +1,81 @@
+<!-- HERO (верхняя часть) -->
+<div class="favorites-hero">
+
+  <h1>{{ lang === 'ru' ? 'Сохраненные объявления' : 'Saved Listings' }}</h1>
+  <p>{{ lang === 'ru' ? 'Ваши избранные объекты в одном месте' : 'Your favorite properties in one place' }}</p>
+
+</div>
+
+<!-- БЕЛЫЙ БЛОК -->
+<div class="favorites-container">
+
+  <!-- TABS -->
+  <div class="tabs">
+
+    <button 
+      (click)="setTab('favorites')"
+      [class.active]="activeTab === 'favorites'"
+    >
+      {{ lang === 'ru' ? 'Избранные объявления' : 'Favorite listings' }}
+    </button>
+
+    <button 
+      (click)="setTab('recent')"
+      [class.active]="activeTab === 'recent'"
+    >
+      {{ lang === 'ru' ? 'Недавно просмотренные' : 'Recently viewed' }}
+    </button>
+
+  </div>
+
+  <!-- CONTENT -->
+
+  <!-- FAVORITES -->
+  <div *ngIf="activeTab === 'favorites'">
+
+    <div *ngIf="favorites.length === 0" class="empty">
+      {{ lang === 'ru' ? 'Нет сохраненных объектов' : 'No saved properties' }}
+    </div>
+
+    <div class="grid">
+      <div *ngFor="let property of favorites" class="card-wrapper">
+        
+        <app-listing-card [listing]="property"></app-listing-card>
+
+        <button
+          class="remove-btn"
+          type="button"
+          (click)="remove(property)"
+          [attr.aria-label]="lang === 'ru' ? 'Удалить из избранного' : 'Remove from favorites'"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            class="remove-btn__icon"
+            aria-hidden="true"
+          >
+            <path d="M6 6L18 18M18 6L6 18"></path>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECENT -->
+  <div *ngIf="activeTab === 'recent'">
+
+    <div *ngIf="recent.length === 0" class="empty">
+      {{ lang === 'ru' ? 'Нет недавно просмотренных объектов' : 'No recently viewed properties' }}
+    </div>
+
+    <div class="grid">
+      <div *ngFor="let property of recent" class="card-wrapper">
+        <app-listing-card [listing]="property"></app-listing-card>
+      </div>
+    </div>
+
+  </div>
+
+</div>

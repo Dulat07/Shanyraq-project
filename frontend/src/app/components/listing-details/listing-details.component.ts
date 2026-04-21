@@ -1,56 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Listing } from '../../models/listing.model';
-import { SearchComponent } from '../../components/search/search.component';
-import { FiltersComponent, FilterState } from '../../components/filters/filters.component';
-import { ListingListComponent } from '../../components/listing-list/listing-list.component';
+import { FavoritesService } from '../../services/favorites.service';
 import { LanguageService } from '../../services/language.service';
-
+import { RecentService } from '../../services/recent.service';
+import { ChatOverlayComponent } from '../chat-overlay/chat-overlay.component';
+import { ChatService } from '../../services/chat.service';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-listing-details',
   standalone: true,
-  imports: [
-    CommonModule,
-    SearchComponent,
-    FiltersComponent,
-    ListingListComponent,
-  ],
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  imports: [CommonModule, ChatOverlayComponent],
+  templateUrl: './listing-details.component.html',
+  styleUrls: ['./listing-details.component.css']
 })
-export class HomeComponent {
+export class ListingDetailsComponent implements OnInit {
+  listing: Listing | null = null;
   lang: 'en' | 'ru' = 'en';
+  showPhone = false;
+  selectedImageIndex = 0;
 
-  constructor(private langService: LanguageService) {
-    this.lang = this.langService.currentLang;
-
-    this.langService.lang$.subscribe(l => {
-      this.lang = l;
-    });
-  }
-
-  properties = [
-    { id: 1, title: 'House in Almaty' },
-    { id: 2, title: 'Apartment in Astana' }
-  ];
-  searchQuery = '';
-  category: 'buy' | 'rent' = 'buy';
-  propertyType = '';
-
-  filters: FilterState = {
-    minPrice: null,
-    maxPrice: null,
-    city: '',
-    rooms: '',
-    minArea: null,
-    maxArea: null,
-    furnished: '',
-    parking: '',
-    sortBy: ''
-  };
-
-  allListings: Listing[] = [
+  private allListings: Listing[] = [
     {
       id: 1,
       title: 'Modern apartment in Almaty',
@@ -263,11 +234,11 @@ export class HomeComponent {
     },
     {
       id: 15,
-      title: 'Small commercial unit for café',
+      title: 'Small commercial unit for cafe',
       price: 135000,
       city: 'Aktobe',
       image: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80',
-      description: 'Street-facing commercial unit suitable for café, bakery, or small retail.',
+      description: 'Street-facing commercial unit suitable for cafe, bakery, or small retail.',
       rooms: 2,
       area: 88,
       category: 'rent',
@@ -323,137 +294,113 @@ export class HomeComponent {
     }
   ];
 
-  filteredListings: Listing[] = [...this.allListings];
-
-  get cities(): string[] {
-    return [...new Set(this.allListings.map(item => item.city))];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    public fav: FavoritesService,
+    private recent: RecentService,
+    private chatService: ChatService,
+    private langService: LanguageService
+  ) {
+    this.lang = this.langService.currentLang;
+    this.langService.lang$.subscribe(l => this.lang = l);
   }
 
   ngOnInit() {
-    this.applyFilters();
+    const id = Number(this.route.snapshot.paramMap.get('id'));
+    const stateListing = history.state?.listing as Listing | undefined;
+
+    this.listing =
+      stateListing?.id === id
+        ? stateListing
+        : this.allListings.find(item => item.id === id)
+          || this.recent.getAll().find(item => item.id === id)
+          || this.fav.getFavorites().find(item => item.id === id)
+          || null;
+
+    if (this.listing) {
+      this.recent.add(this.listing);
+    }
   }
 
-  onSearchQueryChange(value: string) {
-    this.searchQuery = value;
-    this.applyFilters();
+  get gallery(): string[] {
+    return this.listing ? [this.listing.image] : [];
   }
 
-  onCategoryChange(value: 'buy' | 'rent') {
-    this.category = value;
-    this.applyFilters();
+  get selectedImage(): string {
+    return this.gallery[this.selectedImageIndex] || this.listing?.image || '';
   }
 
-  onTypeChange(value: string) {
-    this.propertyType = value;
-    this.applyFilters();
+  get sellerName(): string {
+    if (!this.listing) return '';
+    return this.listing.type === 'Commercial' ? 'Business seller' : 'Property owner';
   }
 
-  onFiltersChange(value: FilterState) {
-    this.filters = value;
-    this.applyFilters();
+  get sellerAvatar(): string {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(this.sellerName)}&background=d8e5e7&color=102a2d&bold=true`;
   }
 
-  clearFilters() {
-    this.filters = {
-      minPrice: null,
-      maxPrice: null,
-      city: '',
-      rooms: '',
-      minArea: null,
-      maxArea: null,
-      furnished: '',
-      parking: '',
-      sortBy: ''
-    };
-    this.searchQuery = '';
-    this.propertyType = '';
-    this.category = 'buy';
-    this.applyFilters();
+  get typeLabel(): string {
+    if (!this.listing) return '';
+
+    if (this.lang === 'ru') {
+      return this.listing.type === 'Apartment'
+        ? 'Квартира'
+        : this.listing.type === 'House'
+          ? 'Дом'
+          : 'Коммерческая';
+    }
+
+    return this.listing.type;
   }
 
-  addListing(listing: Listing) {
-    this.allListings = [listing, ...this.allListings];
-    this.applyFilters();
+  get categoryLabel(): string {
+    if (!this.listing) return '';
+
+    return this.lang === 'ru'
+      ? (this.listing.category === 'buy' ? 'Продажа' : 'Аренда')
+      : (this.listing.category === 'buy' ? 'For sale' : 'For rent');
   }
 
-  applyFilters() {
-    let result = [...this.allListings];
+  get detailsTags(): string[] {
+    if (!this.listing) return [];
 
-    result = result.filter(item => item.category === this.category);
+    return [
+      `${this.listing.rooms} ${this.lang === 'ru' ? 'комнат' : 'rooms'}`,
+      `${this.listing.area} m²`,
+      this.typeLabel,
+      this.categoryLabel,
+      this.listing.furnished ? (this.lang === 'ru' ? 'С мебелью' : 'Furnished') : (this.lang === 'ru' ? 'Без мебели' : 'Unfurnished'),
+      this.listing.parking ? (this.lang === 'ru' ? 'Парковка' : 'Parking') : (this.lang === 'ru' ? 'Без парковки' : 'No parking')
+    ];
+  }
 
-    if (this.searchQuery.trim()) {
-      const query = this.searchQuery.toLowerCase();
-      result = result.filter(item => item.title.toLowerCase().includes(query));
-    }
+  selectImage(index: number) {
+    this.selectedImageIndex = index;
+  }
 
-    if (this.propertyType) {
-      result = result.filter(item => item.type === this.propertyType);
-    }
+  previousImage() {
+    if (!this.gallery.length) return;
+    this.selectedImageIndex = (this.selectedImageIndex - 1 + this.gallery.length) % this.gallery.length;
+  }
 
-    if (this.filters.minPrice !== null) {
-      result = result.filter(item => item.price >= this.filters.minPrice!);
-    }
+  nextImage() {
+    if (!this.gallery.length) return;
+    this.selectedImageIndex = (this.selectedImageIndex + 1) % this.gallery.length;
+  }
 
-    if (this.filters.maxPrice !== null) {
-      result = result.filter(item => item.price <= this.filters.maxPrice!);
-    }
+  togglePhone() {
+    this.showPhone = !this.showPhone;
+  }
 
-    if (this.filters.city) {
-      result = result.filter(item => item.city === this.filters.city);
-    }
+  openChat() {
+    this.chatService.open({
+      name: this.sellerName,
+      avatar: this.sellerAvatar
+    });
+  }
 
-    if (this.filters.rooms === '1') {
-      result = result.filter(item => item.rooms === 1);
-    }
-
-    if (this.filters.rooms === '2') {
-      result = result.filter(item => item.rooms === 2);
-    }
-
-    if (this.filters.rooms === '3') {
-      result = result.filter(item => item.rooms === 3);
-    }
-
-    if (this.filters.rooms === '3+') {
-      result = result.filter(item => item.rooms >= 3);
-    }
-
-    if (this.filters.minArea !== null) {
-      result = result.filter(item => item.area >= this.filters.minArea!);
-    }
-
-    if (this.filters.maxArea !== null) {
-      result = result.filter(item => item.area <= this.filters.maxArea!);
-    }
-
-    if (this.filters.furnished === 'yes') {
-      result = result.filter(item => item.furnished);
-    }
-
-    if (this.filters.furnished === 'no') {
-      result = result.filter(item => !item.furnished);
-    }
-
-    if (this.filters.parking === 'yes') {
-      result = result.filter(item => item.parking);
-    }
-
-    if (this.filters.parking === 'no') {
-      result = result.filter(item => !item.parking);
-    }
-
-    if (this.filters.sortBy === 'priceAsc') {
-      result.sort((a, b) => a.price - b.price);
-    }
-
-    if (this.filters.sortBy === 'priceDesc') {
-      result.sort((a, b) => b.price - a.price);
-    }
-
-    if (this.filters.sortBy === 'newest') {
-      result.sort((a, b) => +new Date(b.createdAt) - +new Date(a.createdAt));
-    }
-
-    this.filteredListings = result;
+  goBack() {
+    this.router.navigate(['/home']);
   }
 }

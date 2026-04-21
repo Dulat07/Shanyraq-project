@@ -2,22 +2,30 @@
   <div class="hero-overlay"></div>
 
   <div class="hero-content">
-    <span class="hero-badge">Real estate marketplace</span>
-    <h1>Find your perfect home</h1>
-    <p>Browse apartments, houses, and commercial properties across Kazakhstan.</p>
+    <span class="hero-badge">
+      {{ lang === 'ru' ? 'Маркетплейс недвижимости' : 'Real estate marketplace' }}
+    </span>
+    <h1>
+      {{ lang === 'ru' ? 'Найдите свой идеальный дом' : 'Find your perfect home' }}
+    </h1>
+    <p>
+      {{ lang === 'ru'
+        ? 'Просматривайте квартиры, дома и коммерческую недвижимость по всему Казахстану.'
+        : 'Browse apartments, houses, and commercial properties across Kazakhstan.' }}
+    </p>
 
     <div class="hero-card">
       <div class="category-toggle">
         <button
           [class.active]="category === 'buy'"
           (click)="onCategorySelect('buy')">
-          Buy
+          {{ lang === 'ru' ? 'Купить' : 'Buy' }}
         </button>
 
         <button
           [class.active]="category === 'rent'"
           (click)="onCategorySelect('rent')">
-          Rent
+          {{ lang === 'ru' ? 'Аренда' : 'Rent' }}
         </button>
       </div>
 
@@ -26,14 +34,22 @@
           type="text"
           [(ngModel)]="searchQuery"
           (ngModelChange)="onQueryChange()"
-          placeholder="Search by title..."
+          [placeholder]="lang === 'ru' ? 'Поиск по названию...' : 'Search by title...'"
         />
 
         <select [(ngModel)]="propertyType" (change)="onTypeChange()">
-          <option value="">All types</option>
-          <option value="Apartment">Apartment</option>
-          <option value="House">House</option>
-          <option value="Commercial">Commercial</option>
+          <option value="">
+            {{ lang === 'ru' ? 'Все типы' : 'All types' }}
+          </option>
+          <option value="Apartment">
+            {{ lang === 'ru' ? 'Квартира' : 'Apartment' }}
+          </option>
+          <option value="House">
+            {{ lang === 'ru' ? 'Дом' : 'House' }}
+          </option>
+          <option value="Commercial">
+            {{ lang === 'ru' ? 'Коммерческая' : 'Commercial' }}
+          </option>
         </select>
       </div>
     </div>

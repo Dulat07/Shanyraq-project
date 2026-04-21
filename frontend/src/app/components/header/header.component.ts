@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { FavoritesService } from '../../services/favorites.service';
+import { LanguageService } from '../../services/language.service';
+
 
 @Component({
   selector: 'app-header',
@@ -12,7 +15,23 @@ import { Router, RouterLink } from '@angular/router';
 export class HeaderComponent {
   isLoggedIn = false;
 
-  constructor(private router: Router) {}
+  lang: 'en' | 'ru' = 'en';
+
+  constructor(
+    private router: Router,
+    public fav: FavoritesService,
+    private langService: LanguageService
+  ) {
+    this.lang = this.langService.currentLang;
+
+    this.langService.lang$.subscribe(l => {
+      this.lang = l;
+    });
+  }
+
+  setLang(language: 'en' | 'ru') {
+    this.langService.setLang(language);
+  }
 
   goToHome() {
     this.router.navigate(['/']);

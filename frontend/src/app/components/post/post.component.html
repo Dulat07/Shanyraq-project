@@ -2,72 +2,72 @@
   <div class="post-page__container">
     <div class="post-form">
       <div class="post-form__header">
-        <span class="post-form__badge">Post new ad</span>
-        <h2>Create your property listing</h2>
-        <p>Fill in the main details below to make your property look clear and attractive.</p>
+        <span class="post-form__badge">{{ lang === 'ru' ? 'Новое объявление' : 'Post new ad' }}</span>
+        <h2>{{ lang === 'ru' ? 'Создайте объявление о недвижимости' : 'Create your property listing' }}</h2>
+        <p>{{ lang === 'ru' ? 'Заполните основные детали, чтобы объявление выглядело понятным и привлекательным.' : 'Fill in the main details below to make your property look clear and attractive.' }}</p>
       </div>
 
       <div class="form-grid">
         <div class="form-field form-field--full">
-          <label for="title">Listing title</label>
-          <input id="title" [(ngModel)]="form.title" placeholder="Modern apartment in Almaty" />
+          <label for="title">{{ lang === 'ru' ? 'Название объявления' : 'Listing title' }}</label>
+          <input id="title" [(ngModel)]="form.title" [placeholder]="lang === 'ru' ? 'Современная квартира в Алматы' : 'Modern apartment in Almaty'" />
         </div>
 
         <div class="form-field">
-          <label for="price">Price</label>
+          <label for="price">{{ lang === 'ru' ? 'Цена' : 'Price' }}</label>
           <input id="price" [(ngModel)]="form.price" type="number" placeholder="85000" />
         </div>
 
         <div class="form-field">
-          <label for="city">City</label>
-          <input id="city" [(ngModel)]="form.city" placeholder="Almaty" />
+          <label for="city">{{ lang === 'ru' ? 'Город' : 'City' }}</label>
+          <input id="city" [(ngModel)]="form.city" [placeholder]="lang === 'ru' ? 'Алматы' : 'Almaty'" />
         </div>
 
         <div class="form-field">
-          <label for="rooms">Rooms</label>
+          <label for="rooms">{{ lang === 'ru' ? 'Комнаты' : 'Rooms' }}</label>
           <input id="rooms" [(ngModel)]="form.rooms" type="number" placeholder="2" />
         </div>
 
         <div class="form-field">
-          <label for="area">Area (m²)</label>
+          <label for="area">{{ lang === 'ru' ? 'Площадь (м²)' : 'Area (m²)' }}</label>
           <input id="area" [(ngModel)]="form.area" type="number" placeholder="68" />
         </div>
 
         <div class="form-field">
-          <label for="category">Category</label>
+          <label for="category">{{ lang === 'ru' ? 'Категория' : 'Category' }}</label>
           <select id="category" [(ngModel)]="form.category">
-            <option value="buy">Buy</option>
-            <option value="rent">Rent</option>
+            <option value="buy">{{ lang === 'ru' ? 'Купить' : 'Buy' }}</option>
+            <option value="rent">{{ lang === 'ru' ? 'Аренда' : 'Rent' }}</option>
           </select>
         </div>
 
         <div class="form-field">
-          <label for="type">Property type</label>
+          <label for="type">{{ lang === 'ru' ? 'Тип недвижимости' : 'Property type' }}</label>
           <select id="type" [(ngModel)]="form.type">
-            <option value="Apartment">Apartment</option>
-            <option value="House">House</option>
-            <option value="Commercial">Commercial</option>
+            <option value="Apartment">{{ lang === 'ru' ? 'Квартира' : 'Apartment' }}</option>
+            <option value="House">{{ lang === 'ru' ? 'Дом' : 'House' }}</option>
+            <option value="Commercial">{{ lang === 'ru' ? 'Коммерческая' : 'Commercial' }}</option>
           </select>
         </div>
 
         <div class="form-field form-field--full">
-          <label for="image">Image URL</label>
+          <label for="image">{{ lang === 'ru' ? 'URL изображения' : 'Image URL' }}</label>
           <input id="image" [(ngModel)]="form.image" placeholder="https://..." />
         </div>
 
         <div class="form-field form-field--full">
-          <label for="description">Description</label>
+          <label for="description">{{ lang === 'ru' ? 'Описание' : 'Description' }}</label>
           <textarea
             id="description"
             [(ngModel)]="form.description"
-            placeholder="Describe the property, condition, location, and key advantages...">
+            [placeholder]="lang === 'ru' ? 'Опишите объект, состояние, расположение и ключевые преимущества...' : 'Describe the property, condition, location, and key advantages...'">
           </textarea>
         </div>
       </div>
 
       <div class="post-form__actions">
         <button type="button" class="post-form__submit" (click)="submitForm()">
-          Publish listing
+          {{ lang === 'ru' ? 'Опубликовать объявление' : 'Publish listing' }}
         </button>
       </div>
     </div>
