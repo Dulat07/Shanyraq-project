@@ -1,7 +1,11 @@
 <main class="home-wrapper">
   <app-search 
     [query]="searchQuery" 
-    (queryChange)="onSearchQueryChange($any($event))">
+    [category]="category"
+    [propertyType]="propertyType"
+    (queryChange)="onSearchQueryChange($any($event))"
+    (categoryChange)="onCategoryChange($event)"
+    (propertyTypeChange)="onTypeChange($event)">
   </app-search>
 
   <app-filters 
