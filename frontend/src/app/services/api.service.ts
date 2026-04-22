@@ -44,6 +44,7 @@ export class ApiService {
           localStorage.setItem('token',    res.token);
           localStorage.setItem('userId',   res.user_id);
           localStorage.setItem('username', res.username);
+          localStorage.setItem('email',    res.email ?? '');
           this.loggedInSubject.next(true);
         }
       }),
@@ -58,6 +59,7 @@ export class ApiService {
           localStorage.setItem('token',    res.token);
           localStorage.setItem('userId',   res.user_id);
           localStorage.setItem('username', res.username);
+          localStorage.setItem('email',    res.email ?? '');
           this.loggedInSubject.next(true);
         }
       }),
@@ -77,7 +79,20 @@ export class ApiService {
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('username');
+    localStorage.removeItem('email');
     this.loggedInSubject.next(false);
+  }
+
+  getCurrentUser(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/me/`, {
+      headers: this.getAuthHeaders()
+    }).pipe(catchError((err) => this.handleError(err)));
+  }
+
+  updateCurrentUser(data: { username?: string; email?: string; phone?: string; city?: string }): Observable<any> {
+    return this.http.patch(`${this.apiUrl}/me/`, data, {
+      headers: this.getAuthHeaders()
+    }).pipe(catchError((err) => this.handleError(err)));
   }
 
   // ── Properties ──────────────────────────────────────────────────────────

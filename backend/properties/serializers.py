@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Category, Property, Booking
+from .models import Category, Property, Booking, UserProfile
 
 
 # ─── Serializers (from serializers.Serializer) ───────────────────────────────
@@ -26,6 +26,32 @@ class RegisterSerializer(serializers.Serializer):
             password=validated_data['password'],
             email=validated_data.get('email', '')
         )
+
+
+class CurrentUserSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=150)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    city = serializers.CharField(required=False, allow_blank=True)
+
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError("Username is already taken.")
+        return value
+
+    def update(self, instance, validated_data):
+        profile, _ = UserProfile.objects.get_or_create(user=instance)
+
+        instance.username = validated_data.get('username', instance.username)
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+
+        profile.phone = validated_data.get('phone', profile.phone)
+        profile.address = validated_data.get('city', profile.address)
+        profile.save()
+
+        return instance
 
 
 # ─── ModelSerializers ────────────────────────────────────────────────────────

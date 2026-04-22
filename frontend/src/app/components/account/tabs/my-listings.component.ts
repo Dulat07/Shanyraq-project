@@ -2,9 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ListingCardComponent } from '../../listing-card/listing-card.component';
-import { ListingsService } from '../../../services/listings.service';
 import { ApiService } from '../../../services/api.service';
-import { Observable } from 'rxjs';
 import { LanguageService } from '../../../services/language.service';
 
 @Component({
@@ -15,26 +13,30 @@ import { LanguageService } from '../../../services/language.service';
   styleUrls: ['./account-tab.component.css']
 })
 export class MyListingsComponent implements OnInit {
-  listings$: Observable<any[]>;
+  userListings: any[] = [];
   isLoading = true;
   error: string | null = null;
-  publishingId: number | null = null;
   lang: 'en' | 'ru' = 'en';
 
   constructor(
-    private listingsService: ListingsService,
-    private apiService: ApiService,
-    private langService: LanguageService
+    private readonly apiService: ApiService,
+    private readonly langService: LanguageService
   ) {
-    this.listings$ = this.listingsService.myListings$;
     this.lang = this.langService.currentLang;
-    this.langService.lang$.subscribe(l => this.lang = l);
+    this.langService.lang$.subscribe((l) => this.lang = l);
   }
 
   ngOnInit(): void {
-    // Fetch user's properties from the backend
+    this.loadUserProperties();
+  }
+
+  private loadUserProperties(): void {
+    this.isLoading = true;
+    this.error = null;
+
     this.apiService.getUserProperties().subscribe({
       next: (properties) => {
+        this.userListings = properties.map((property) => this.mapPropertyToListing(property));
         this.isLoading = false;
       },
       error: (err) => {
@@ -45,42 +47,28 @@ export class MyListingsComponent implements OnInit {
     });
   }
 
-  isDeleted(property: any): boolean {
-    return property.is_deleted === true;
+  private mapPropertyToListing(property: any): any {
+    return {
+      ...property,
+      city: property.city || property.location || '',
+      image: property.image || property.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=1200&q=80',
+      area: property.area || 0,
+      type: property.type || this.getPropertyType(property.category),
+      category: property.category?.name || property.category || '',
+    };
   }
 
-  isPublished(property: any): boolean {
-    return property.is_published === true;
-  }
+  private getPropertyType(category: any): string {
+    const categoryName = String(category?.name || category || '').toLowerCase();
 
-  publishProperty(property: any, event: Event): void {
-    event.stopPropagation();
-    this.publishingId = property.id;
-    this.apiService.publishProperty(property.id).subscribe({
-      next: (updated) => {
-        // Update the property in the list
-        Object.assign(property, updated);
-        this.publishingId = null;
-      },
-      error: (err) => {
-        console.error('Error publishing property:', err);
-        this.publishingId = null;
-      }
-    });
-  }
+    if (categoryName.includes('commercial')) {
+      return 'Commercial';
+    }
 
-  unpublishProperty(property: any, event: Event): void {
-    event.stopPropagation();
-    this.publishingId = property.id;
-    this.apiService.unpublishProperty(property.id).subscribe({
-      next: () => {
-        property.is_published = false;
-        this.publishingId = null;
-      },
-      error: (err) => {
-        console.error('Error unpublishing property:', err);
-        this.publishingId = null;
-      }
-    });
+    if (categoryName.includes('house')) {
+      return 'House';
+    }
+
+    return 'Apartment';
   }
 }

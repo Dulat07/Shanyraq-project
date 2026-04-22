@@ -8,13 +8,14 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
 
-from .models import Category, Property, Booking
+from .models import Category, Property, Booking, UserProfile
 from .serializers import (
     CategorySerializer,
     PropertySerializer,
     BookingSerializer,
     LoginSerializer,
     RegisterSerializer,
+    CurrentUserSerializer,
 )
 
 
@@ -45,6 +46,7 @@ def login_view(request):
         'token':    token.key,
         'user_id':  user.id,
         'username': user.username,
+        'email':    user.email,
     })
 
 
@@ -68,7 +70,36 @@ def register_view(request):
         'token':    token.key,
         'user_id':  user.id,
         'username': user.username,
+        'email':    user.email,
     }, status=status.HTTP_201_CREATED)
+
+
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def current_user_view(request):
+    user = request.user
+    profile, _ = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == 'PATCH':
+        serializer = CurrentUserSerializer(
+            instance=user,
+            data=request.data,
+            partial=True,
+            context={'request': request}
+        )
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        user = serializer.save()
+        profile = getattr(user, 'profile', None)
+
+    return Response({
+        'id': user.id,
+        'username': user.username,
+        'email': user.email,
+        'phone': getattr(profile, 'phone', '') or '',
+        'city': getattr(profile, 'address', '') or '',
+    })
 
 
 @api_view(['POST'])

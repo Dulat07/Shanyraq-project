@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
@@ -10,7 +10,7 @@ import { UserService } from '../../services/user.service';
   templateUrl: './account-page.component.html',
   styleUrls: ['./account-page.component.css']
 })
-export class AccountPageComponent {
+export class AccountPageComponent implements OnInit {
   user$ = this.userService.currentUser$;
 
   tabs = [
@@ -21,4 +21,8 @@ export class AccountPageComponent {
   ];
 
   constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.userService.loadCurrentUser();
+  }
 }

@@ -2,15 +2,15 @@
   <a routerLink="/home" class="shadow__btn">Shanyraq.kz</a>
 
   <div class="lang-switch">
-    <button 
-      [class.active]="lang === 'en'" 
+    <button
+      [class.active]="lang === 'en'"
       (click)="setLang('en')"
     >
       EN
     </button>
 
-    <button 
-      [class.active]="lang === 'ru'" 
+    <button
+      [class.active]="lang === 'ru'"
       (click)="setLang('ru')"
     >
       RU
@@ -31,9 +31,6 @@
     </a>
 
     <ng-container *ngIf="isLoggedIn">
-      <a routerLink="/account" class="profile-link">
-        {{ lang === 'ru' ? 'Профиль' : 'Profile' }}
-      </a>
       <button (click)="logout()" class="btn-secondary nav-action-link">
         {{ lang === 'ru' ? 'Выйти' : 'Log Out' }}
       </button>
