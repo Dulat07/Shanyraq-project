@@ -15,8 +15,10 @@ urlpatterns = [
     # ── Properties ────────────────────────────────────────────────────────
     path('properties/',                   views.list_properties,                    name='property-list'),
     path('properties/available/',         views.filter_properties,                  name='property-available'),
+    path('properties/my/',                views.UserPropertiesView.as_view(),       name='property-my'),
     path('properties/create/',            views.PropertyCreateView.as_view(),       name='property-create'),
     path('properties/<int:pk>/',          views.PropertyDetailView.as_view(),       name='property-detail'),
+    path('properties/<int:pk>/publish/',  views.PropertyPublishView.as_view(),      name='property-publish'),
     path('properties/<int:pk>/update/',   views.PropertyUpdateDeleteView.as_view(), name='property-update'),
 
     # ── Products alias ────────────────────────────────────────────────────

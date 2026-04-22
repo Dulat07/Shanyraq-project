@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { LanguageService } from '../../services/language.service';
 import { NotificationService } from '../../services/notification.service';
-import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -17,45 +16,86 @@ import { tap } from 'rxjs';
 export class LoginComponent {
   username = '';
   password = '';
+  email = ''; 
+
   lang: 'en' | 'ru' = 'en';
   authMode: 'signin' | 'signup' = 'signin';
 
+  isLoading = false;
+  errorMsg = '';
+
   constructor(
-    private apiService: ApiService,
-    private router: Router,
-    private langService: LanguageService,
-    private notificationService: NotificationService
+    private readonly apiService: ApiService,
+    private readonly router: Router,
+    private readonly langService: LanguageService,
+    private readonly notificationService: NotificationService
   ) {
     this.lang = this.langService.currentLang;
     this.langService.lang$.subscribe(l => this.lang = l);
   }
 
-  onLogin(): void {
+  // ── Переключение режима ──────────────────────────────────────────────────
+  setAuthMode(mode: 'signin' | 'signup'): void {
+    this.authMode = mode;
+    this.errorMsg = '';
+    this.username = '';
+    this.password = '';
+    this.email = '';
+  }
+
+  // ── Отправка формы ───────────────────────────────────────────────────────
+  onAuthSubmit(): void {
+    this.errorMsg = '';
+
+    if (!this.username.trim() || !this.password.trim()) {
+      const msg = this.lang === 'ru' ? 'Заполните все обязательные поля.' : 'Please fill in all required fields.';
+      this.notificationService.show(msg);
+      return;
+    }
+
+    if (this.authMode === 'signup') {
+      this.onRegister();
+    } else {
+      this.onLogin();
+    }
+  }
+
+  // ── Логин ────────────────────────────────────────────────────────────────
+  private onLogin(): void {
+    this.isLoading = true;
     this.apiService.login({ username: this.username, password: this.password }).subscribe({
       next: () => this.router.navigate(['/home']),
       error: (err) => {
-        const message = err?.error?.message || 'Login failed, please check your credentials';
-        this.notificationService.show(message);
+        this.isLoading = false;
+        const msg = this.lang === 'ru' ? 'Неверный логин или пароль.' : 'Invalid username or password.';
+        this.notificationService.show(msg);
       }
     });
   }
 
-  onAuthSubmit(): void {
-    if (this.authMode === 'signup') {
-      this.notificationService.show(this.lang === 'ru' ? 'Регистрация скоро будет доступна.' : 'Sign up will be available soon.');
-      return;
+  // ── Регистрация ──────────────────────────────────────────────────────────
+  private onRegister(): void {
+    this.isLoading = true;
+
+    const payload: any = {
+      username: this.username,
+      password: this.password,
+    };
+    if (this.email.trim()) {
+      payload.email = this.email.trim();
     }
 
-    this.onLogin();
-  }
-
-  setAuthMode(mode: 'signin' | 'signup'): void {
-    this.authMode = mode;
+    this.apiService.register(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: (err: any) => {
+        this.isLoading = false;
+        const msg = err.message?.includes('already')
+          ? (this.lang === 'ru' ? 'Это имя пользователя уже занято.' : 'Username is already taken.')
+          : (this.lang === 'ru' ? 'Ошибка регистрации. Попробуйте ещё раз.' : 'Registration failed. Please try again.');
+        this.notificationService.show(msg);
+      }
+    });
   }
 }
-tap((res: any) => {
-  if(res.token) {
-    localStorage.setItem('token', res.token);
-    localStorage.setItem('userId', res.user_id); // Сохраняем ID владельца
-  }
-})

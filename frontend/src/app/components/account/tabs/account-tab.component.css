@@ -32,6 +32,99 @@
   gap: 18px;
 }
 
+.listing-wrapper {
+  position: relative;
+}
+
+.listing-wrapper.deleted {
+  opacity: 0.6;
+}
+
+.listing-controls {
+  position: relative;
+}
+
+.deleted-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.deleted-badge {
+  background: #f04438;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.btn-publish,
+.btn-unpublish {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.btn-publish {
+  background: #58e653;
+  color: #102a2d;
+}
+
+.btn-publish:hover:not(:disabled) {
+  background: #45d03f;
+}
+
+.btn-unpublish {
+  background: #fda29b;
+  color: #7a271a;
+}
+
+.btn-unpublish:hover:not(:disabled) {
+  background: #f97066;
+}
+
+.btn-publish:disabled,
+.btn-unpublish:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-state,
+.error-state {
+  padding: 24px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-state {
+  color: #f04438;
+  background: #fef3f2;
+  border-radius: 8px;
+  border: 1px solid #fda29b;
+}
+
 .empty-state {
   margin: 36px 0;
   color: #667085;

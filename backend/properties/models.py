@@ -6,7 +6,13 @@ from django.contrib.auth.models import User
 
 class AvailablePropertyManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_available=True)
+        return super().get_queryset().filter(is_available=True, is_deleted=False, is_published=True)
+
+
+class UserPropertiesManager(models.Manager):
+    """Показывает все посты пользователя, включая удалённые"""
+    def get_queryset(self):
+        return super().get_queryset().filter(is_deleted=False)
 
 
 # ─── Category ────────────────────────────────────────────────────────────────
@@ -41,6 +47,8 @@ class Property(models.Model):
     rooms       = models.IntegerField(default=1)
     location    = models.CharField(max_length=255)
     is_available = models.BooleanField(default=True)
+    is_deleted  = models.BooleanField(default=False)  # Soft delete flag
+    is_published = models.BooleanField(default=False)  # Published on main page
     image_url   = models.URLField(max_length=500, blank=True, null=True)
 
     # ForeignKey to Category (replaces the old CharField)
@@ -67,6 +75,7 @@ class Property(models.Model):
 
     objects          = models.Manager()
     available_objects = AvailablePropertyManager()
+    user_properties = UserPropertiesManager()
 
     class Meta:
         verbose_name_plural = "properties"

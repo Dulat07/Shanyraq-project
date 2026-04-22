@@ -57,14 +57,21 @@
         required
       />
 
-      <button class="auth-submit" type="submit">
-        {{ authMode === 'signin'
-          ? (lang === 'ru' ? 'Войти' : 'Sign In')
-          : (lang === 'ru' ? 'Зарегистрироваться' : 'Sign Up') }}
+      <!-- Submit button -->
+      <button class="auth-submit" type="submit" [disabled]="isLoading">
+        <span *ngIf="!isLoading">
+          {{ authMode === 'signin'
+            ? (lang === 'ru' ? 'Войти' : 'Sign In')
+            : (lang === 'ru' ? 'Зарегистрироваться' : 'Sign Up') }}
+        </span>
+        <span *ngIf="isLoading">
+          {{ lang === 'ru' ? 'Загрузка...' : 'Loading...' }}
+        </span>
       </button>
 
+      <!-- Switch mode -->
       <p class="auth-switch" *ngIf="authMode === 'signin'">
-        {{ lang === 'ru' ? 'Нет аккаунта?' : 'Don’t have an account?' }}
+        {{ lang === 'ru' ? 'Нет аккаунта?' : "Don't have an account?" }}
         <button type="button" (click)="setAuthMode('signup')">
           {{ lang === 'ru' ? 'Зарегистрироваться' : 'Sign Up' }}
         </button>
@@ -76,6 +83,7 @@
           {{ lang === 'ru' ? 'Войти' : 'Sign In' }}
         </button>
       </p>
+
     </form>
   </section>
 </main>

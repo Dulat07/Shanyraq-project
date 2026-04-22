@@ -86,8 +86,15 @@ class PropertyDeleteView(APIView):
     def delete(self, request, pk):
         try:
             property_item = Property.objects.get(pk=pk)
-            # Можно добавить проверку: если property_item.owner != request.user: return 403
-            property_item.delete()
+            # Проверяем, что это владелец
+            if property_item.owner != request.user:
+                return Response(
+                    {"error": "У вас нет прав на удаление этого объекта"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            # Soft delete — помечаем как удалённый вместо полного удаления
+            property_item.is_deleted = True
+            property_item.save()
             return Response({"message": "Объект успешно удален"}, status=status.HTTP_204_NO_CONTENT)
         except Property.DoesNotExist:
             return Response({"error": "Объект не найден"}, status=status.HTTP_404_NOT_FOUND)
@@ -121,7 +128,11 @@ def create_category(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def list_properties(request):
-    queryset = Property.objects.select_related('category', 'owner').all()
+    """GET /api/properties/  —  опубликованные объявления (для главной страницы)"""
+    queryset = Property.objects.select_related('category', 'owner').filter(
+        is_deleted=False, 
+        is_published=True
+    )
 
     search = request.GET.get('search')
     if search:
@@ -166,6 +177,53 @@ class PropertyUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 
+class UserPropertiesView(APIView):
+    """GET /api/properties/my/ — посты текущего пользователя (включая удалённые)"""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        properties = Property.objects.filter(
+            owner=request.user
+        ).select_related('category', 'owner').order_by('-id')
+        serializer = PropertySerializer(properties, many=True)
+        return Response(serializer.data)
+
+
+class PropertyPublishView(APIView):
+    """POST /api/properties/<id>/publish/ — опубликовать пост"""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        try:
+            property_item = Property.objects.get(pk=pk)
+            if property_item.owner != request.user:
+                return Response(
+                    {"error": "У вас нет прав на публикацию этого объекта"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            property_item.is_published = True
+            property_item.save()
+            serializer = PropertySerializer(property_item)
+            return Response(serializer.data)
+        except Property.DoesNotExist:
+            return Response({"error": "Объект не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, pk):
+        """DELETE /api/properties/<id>/publish/ — отменить публикацию"""
+        try:
+            property_item = Property.objects.get(pk=pk)
+            if property_item.owner != request.user:
+                return Response(
+                    {"error": "У вас нет прав на изменение этого объекта"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            property_item.is_published = False
+            property_item.save()
+            return Response({"message": "Публикация отменена"})
+        except Property.DoesNotExist:
+            return Response({"error": "Объект не найден"}, status=status.HTTP_404_NOT_FOUND)
+
+
 # ═══════════════════════════════════════════════════════════════════════════
 #  BOOKINGS
 # ═══════════════════════════════════════════════════════════════════════════
@@ -186,3 +244,5 @@ class BookingListView(APIView):
         bookings   = Booking.objects.filter(user=request.user).select_related('property')
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+    
+

@@ -7,10 +7,54 @@
   <a routerLink="/post" class="tab-action">Post listing</a>
 </header>
 
-<div class="account-grid" *ngIf="listings$ | async as listings">
-  <app-listing-card *ngFor="let listing of listings" [listing]="listing"></app-listing-card>
+<div *ngIf="isLoading" class="loading-state">Loading...</div>
+
+<div *ngIf="error" class="error-state">{{ error }}</div>
+
+<div class="account-grid" *ngIf="!isLoading && (listings$ | async) as listings">
+  <div *ngFor="let listing of listings" class="listing-wrapper" [class.deleted]="isDeleted(listing)">
+    <app-listing-card [listing]="listing"></app-listing-card>
+    
+    <div class="listing-controls">
+      <div *ngIf="isDeleted(listing)" class="deleted-overlay">
+        <span class="deleted-badge">Deleted</span>
+      </div>
+      
+      <div class="action-buttons">
+        <button 
+          *ngIf="!isPublished(listing)" 
+          (click)="publishProperty(listing, $event)"
+          [disabled]="publishingId === listing.id || isDeleted(listing)"
+          class="btn-publish"
+          [title]="lang === 'ru' ? 'Опубликовать' : 'Publish'"
+        >
+          <span *ngIf="publishingId !== listing.id">
+            {{ lang === 'ru' ? '📤 Опубликовать' : '📤 Publish' }}
+          </span>
+          <span *ngIf="publishingId === listing.id">
+            {{ lang === 'ru' ? 'Публикую...' : 'Publishing...' }}
+          </span>
+        </button>
+        
+        <button 
+          *ngIf="isPublished(listing)" 
+          (click)="unpublishProperty(listing, $event)"
+          [disabled]="publishingId === listing.id"
+          class="btn-unpublish"
+          [title]="lang === 'ru' ? 'Скрыть' : 'Unpublish'"
+        >
+          <span *ngIf="publishingId !== listing.id">
+            {{ lang === 'ru' ? '📥 Скрыть' : '📥 Unpublish' }}
+          </span>
+          <span *ngIf="publishingId === listing.id">
+            {{ lang === 'ru' ? 'Скрываю...' : 'Unpublishing...' }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
-<p class="empty-state" *ngIf="(listings$ | async)?.length === 0">
-  You do not have active listings yet.
+<p class="empty-state" *ngIf="!isLoading && (listings$ | async)?.length === 0">
+  {{ lang === 'ru' ? 'У вас пока нет объявлений.' : 'You do not have any listings yet.' }}
 </p>
