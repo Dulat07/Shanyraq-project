@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Filters } from '../../models/filters.model';
 import { FiltersService } from '../../services/filters.service';
@@ -13,7 +13,7 @@ import { LanguageService } from '../../services/language.service';
   templateUrl: './filters.component.html',
   styleUrls: ['./filters.component.css']
 })
-export class FiltersComponent implements OnInit, OnDestroy {
+export class FiltersComponent implements OnChanges, OnInit, OnDestroy {
   @Input() filters!: Filters;
   @Input() cities: string[] = [];
   @Output() filtersChange = new EventEmitter<Filters>();
@@ -23,12 +23,12 @@ export class FiltersComponent implements OnInit, OnDestroy {
   private formSubscription?: Subscription;
 
   filtersForm = this.fb.group({
-    priceMin: this.fb.control<number | null>(null),
-    priceMax: this.fb.control<number | null>(null),
+    priceMin: this.fb.control<number | null>(null, [Validators.min(0)]),
+    priceMax: this.fb.control<number | null>(null, [Validators.min(0)]),
     city: this.fb.control<string>(''),
     rooms: this.fb.control<number | null>(null),
-    areaMin: this.fb.control<number | null>(null),
-    areaMax: this.fb.control<number | null>(null),
+    areaMin: this.fb.control<number | null>(null, [Validators.min(0)]),
+    areaMax: this.fb.control<number | null>(null, [Validators.min(0)]),
     propertyType: this.fb.control<string>(''),
     furnished: this.fb.control<string>(''),
     parking: this.fb.control<string>(''),
@@ -50,26 +50,40 @@ export class FiltersComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['filters']) {
+      this.filtersForm.reset(this.toFormValue(this.filters || {}), { emitEvent: false });
+    }
+  }
+
   ngOnDestroy() {
     this.formSubscription?.unsubscribe();
   }
 
+  sanitizeNumber(controlName: 'priceMin' | 'priceMax' | 'areaMin' | 'areaMax') {
+    const control = this.filtersForm.controls[controlName];
+    const value = control.value;
+
+    if (value !== null && Number(value) < 0) {
+      control.setValue(0);
+    }
+  }
+
+  preventNegativeInput(event: KeyboardEvent) {
+    if (event.key === '-' || event.key === 'Subtract') {
+      event.preventDefault();
+    }
+  }
+
   clearFilters() {
-    this.filtersForm.reset({
-      priceMin: null,
-      priceMax: null,
-      city: '',
-      rooms: null,
-      areaMin: null,
-      areaMax: null,
-      propertyType: '',
-      furnished: '',
-      parking: '',
-      sortBy: ''
-    });
+    this.filtersForm.reset(this.toFormValue({}), { emitEvent: false });
+    this.filtersService.reset();
+    this.filtersChange.emit({});
+    this.clear.emit();
   }
 
   private emitFilters() {
+    this.normalizeNumericFilters();
     const filters = this.toFiltersDto();
     this.filtersService.setFilters(filters);
     this.filtersChange.emit(filters);
@@ -89,6 +103,45 @@ export class FiltersComponent implements OnInit, OnDestroy {
       furnished: this.optionalBoolean(value.furnished),
       parking: this.optionalBoolean(value.parking),
       sortBy: value.sortBy || undefined
+    };
+  }
+
+  private normalizeNumericFilters() {
+    (['priceMin', 'priceMax', 'areaMin', 'areaMax'] as const).forEach(controlName => {
+      this.sanitizeNumber(controlName);
+    });
+
+    this.swapRangeIfNeeded('priceMin', 'priceMax');
+    this.swapRangeIfNeeded('areaMin', 'areaMax');
+  }
+
+  private swapRangeIfNeeded(
+    minControlName: 'priceMin' | 'areaMin',
+    maxControlName: 'priceMax' | 'areaMax'
+  ) {
+    const minControl = this.filtersForm.controls[minControlName];
+    const maxControl = this.filtersForm.controls[maxControlName];
+    const minValue = minControl.value;
+    const maxValue = maxControl.value;
+
+    if (minValue !== null && maxValue !== null && Number(minValue) > Number(maxValue)) {
+      minControl.setValue(Number(maxValue), { emitEvent: false });
+      maxControl.setValue(Number(minValue), { emitEvent: false });
+    }
+  }
+
+  private toFormValue(filters: Filters) {
+    return {
+      priceMin: filters.priceMin ?? null,
+      priceMax: filters.priceMax ?? null,
+      city: filters.city ?? '',
+      rooms: filters.rooms ?? null,
+      areaMin: filters.areaMin ?? null,
+      areaMax: filters.areaMax ?? null,
+      propertyType: filters.propertyType ?? '',
+      furnished: filters.furnished === undefined ? '' : String(filters.furnished),
+      parking: filters.parking === undefined ? '' : String(filters.parking),
+      sortBy: filters.sortBy ?? ''
     };
   }
 

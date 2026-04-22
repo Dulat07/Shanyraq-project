@@ -64,6 +64,9 @@
 }
 
 .shadow__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 10px 28px;
   border: none;
   font-size: 17px;
@@ -72,6 +75,7 @@
   letter-spacing: 3px;
   font-weight: 700;
   text-transform: uppercase;
+  text-decoration: none;
   transition: 0.4s;
   background: rgb(0, 140, 255);
   box-shadow: 0 0 25px rgb(0, 140, 255);

@@ -32,13 +32,22 @@
       </div>
 
       <div class="search-row">
-        <input
-          #searchInput
-          type="text"
-          [(ngModel)]="query"
-          (ngModelChange)="onQueryChange()"
-          [placeholder]="lang === 'ru' ? 'Поиск по названию...' : 'Search by title...'"
-        />
+        <div class="search-input-group">
+          <input
+            #searchInput
+            type="text"
+            [(ngModel)]="query"
+            (ngModelChange)="onQueryChange()"
+            (keyup.enter)="onQueryChange()"
+            [placeholder]="lang === 'ru' ? 'Поиск по названию...' : 'Search by title...'"
+          />
+
+          <button class="search-submit" type="button" (click)="onQueryChange()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor" class="icon">
+              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linejoin="round" stroke-linecap="round"></path>
+            </svg>
+          </button>
+        </div>
 
         <select [(ngModel)]="propertyType" (change)="onTypeChange()">
           <option value="">

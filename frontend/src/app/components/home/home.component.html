@@ -25,7 +25,92 @@
   <ng-template #emptyState>
     <div class="no-results">
       <p>{{ lang === 'ru' ? 'Ничего не найдено по вашим критериям' : 'No properties match your criteria' }}</p>
-      <button (click)="clearFilters()">{{ lang === 'ru' ? 'Сбросить фильтры' : 'Reset filters' }}</button>
     </div>
   </ng-template>
+
+  <section class="recommended-section">
+    <div class="recommended-section__header">
+      <h2>{{ lang === 'ru' ? 'Рекомендуем для вас' : 'Recommended for you' }}</h2>
+      <p>
+        {{
+          lang === 'ru'
+            ? 'Подборка популярных объектов, которую позже можно подключить к API рекомендаций.'
+            : 'A curated set of popular properties that can later be replaced by API-powered recommendations.'
+        }}
+      </p>
+    </div>
+
+    <div class="recommended-grid">
+      <app-listing-card
+        *ngFor="let listing of recommendedListings"
+        [listing]="listing">
+      </app-listing-card>
+    </div>
+  </section>
+
+  <section id="about" class="about-section">
+    <div class="about-section__header">
+      <span class="about-section__badge">Shanyraq.kz</span>
+      <h2>{{ lang === 'ru' ? 'О нас' : 'About Us' }}</h2>
+      <p>
+        {{
+          lang === 'ru'
+            ? 'Shanyraq.kz — современная платформа недвижимости, где пользователи могут покупать и продавать дома, земельные участки и коммерческие объекты. Проект создан Дулатом Амангельдиевым, Асетом Нурдиллой и Муратом Мадияром, чтобы сделать связь между покупателями и продавцами простой, быстрой и прозрачной.'
+            : 'Shanyraq.kz is a modern real estate marketplace where users can buy and sell houses, land, and commercial buildings. Built by Dulat Amangeldiyev, Asset Nurdilla, and Murat Madiyar, the project makes it simple, fast, and transparent for buyers and sellers to connect in one convenient platform.'
+        }}
+      </p>
+    </div>
+
+    <div class="about-grid">
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Что можно найти' : 'What you can find' }}</h3>
+        <p>
+          {{
+            lang === 'ru'
+              ? 'Объявления о домах, квартирах, земле и зданиях с понятной информацией для сравнения.'
+              : 'Listings for houses, apartments, land, and buildings with clear details for easy comparison.'
+          }}
+        </p>
+      </article>
+
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Наша цель' : 'Our goal' }}</h3>
+        <p>
+          {{
+            lang === 'ru'
+              ? 'Сделать рынок недвижимости удобнее: меньше лишних шагов, больше доверия и быстрый контакт.'
+              : 'To make real estate easier: fewer extra steps, more trust, and faster contact between people.'
+          }}
+        </p>
+      </article>
+
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Команда проекта' : 'Project team' }}</h3>
+        <p>
+          {{
+            lang === 'ru'
+              ? 'Дулат Амангельдиев, Асет Нурдилла и Мурат Мадияр.'
+              : 'Dulat Amangeldiyev, Asset Nurdilla, and Murat Madiyar.'
+          }}
+        </p>
+      </article>
+    </div>
+
+    <div class="contact-grid">
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Email' : 'Email' }}</h3>
+        <p>support&#64;shanyraq.kz</p>
+      </article>
+
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Телефон' : 'Phone' }}</h3>
+        <p>+7 700 123 45 67</p>
+      </article>
+
+      <article class="about-card">
+        <h3>{{ lang === 'ru' ? 'Локация' : 'Location' }}</h3>
+        <p>{{ lang === 'ru' ? 'Алматы, Казахстан' : 'Almaty, Kazakhstan' }}</p>
+      </article>
+    </div>
+  </section>
 </main>

@@ -1,0 +1,8 @@
+<div class="toast-shell" *ngIf="notification$ | async as notification">
+  <div class="toast-card" role="status" aria-live="polite">
+    <p>{{ notification.message }}</p>
+    <button type="button" (click)="close()" aria-label="Close notification">
+      ×
+    </button>
+  </div>
+</div>

@@ -86,7 +86,7 @@
       <section class="info-card listing-summary">
         <div class="summary-top">
           <span class="posted-date">
-            {{ lang === 'ru' ? 'Опубликовано' : 'Published' }} {{ listing.createdAt }}
+            {{ lang === 'ru' ? 'Опубликовано' : 'Published' }} {{ listing.createdAt | date:'dd MMM yyyy' }}
           </span>
         </div>
 
