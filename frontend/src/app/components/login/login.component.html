@@ -1,56 +1,61 @@
-<main class="auth-wrapper">
+<main class="auth-page">
   <section class="auth-visual" aria-hidden="true">
-    <div class="auth-visual-placeholder">
-      <!-- developer can insert content later -->
-      <div class="container"></div>
+    <div class="visual-placeholder">
+      <!-- From Uiverse.io by PriyanshuGupta28 --> 
+      <div class="grid-loader">
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+        <div class="cube"></div>
+      </div>
+      <p class="auth-label">SHANYRAQ.KZ</p>
     </div>
   </section>
 
-  <section class="auth-form-panel">
-    <form class="auth-card glass-panel" (ngSubmit)="onAuthSubmit()">
-      <div class="auth-heading">
-        <p class="auth-kicker">Shanyraq.kz</p>
-        <h2>
-          {{ authMode === 'signin'
-            ? (lang === 'ru' ? 'С возвращением' : 'Welcome Back')
-            : (lang === 'ru' ? 'Создайте аккаунт' : 'Create Account') }}
-        </h2>
-        <p>
-          {{ authMode === 'signin'
-            ? (lang === 'ru' ? 'Войдите в свой аккаунт' : 'Sign in to your account')
-            : (lang === 'ru' ? 'Регистрация скоро будет доступна' : 'Sign up will be available soon') }}
-        </p>
-      </div>
+  <section class="auth-form-container">
+    <form class="auth-card" (ngSubmit)="onAuthSubmit()">
+      <h1>
+        {{ authMode === 'signin'
+          ? (lang === 'ru' ? 'С возвращением' : 'Welcome Back')
+          : (lang === 'ru' ? 'Создайте аккаунт' : 'Create Account') }}
+      </h1>
 
-      <div class="form-group">
-        <label for="auth-username">
-          {{ lang === 'ru' ? 'Имя пользователя или email' : 'Username or email' }}
-        </label>
-        <input
-          id="auth-username"
-          name="username"
-          type="text"
-          class="input"
-          [(ngModel)]="username"
-          autocomplete="username"
-          required
-        />
-      </div>
+      <p class="auth-subtitle">
+        {{ authMode === 'signin'
+          ? (lang === 'ru' ? 'Войдите в свой аккаунт' : 'Sign in to your account')
+          : (lang === 'ru' ? 'Регистрация скоро будет доступна' : 'Sign up will be available soon') }}
+      </p>
 
-      <div class="form-group">
-        <label for="auth-password">
-          {{ lang === 'ru' ? 'Пароль' : 'Password' }}
-        </label>
-        <input
-          id="auth-password"
-          name="password"
-          type="password"
-          class="input"
-          [(ngModel)]="password"
-          autocomplete="current-password"
-          required
-        />
-      </div>
+      <label class="field-label" for="auth-username">
+        {{ lang === 'ru' ? 'Имя пользователя или email' : 'Username or email' }}
+      </label>
+      <input
+        id="auth-username"
+        name="username"
+        type="text"
+        class="input"
+        [(ngModel)]="username"
+        autocomplete="username"
+        required
+      />
+
+      <label class="field-label" for="auth-password">
+        {{ lang === 'ru' ? 'Пароль' : 'Password' }}
+      </label>
+      <input
+        id="auth-password"
+        name="password"
+        type="password"
+        class="input"
+        [(ngModel)]="password"
+        autocomplete="current-password"
+        required
+      />
 
       <button class="auth-submit" type="submit">
         {{ authMode === 'signin'

@@ -42,10 +42,6 @@ export class HeaderComponent implements OnInit {
     this.langService.setLang(language);
   }
 
-  goToHome() {
-    this.router.navigate(['/']);
-  }
-
   openMessages() {
     this.chatService.open({
       name: this.lang === 'ru' ? 'Сообщения' : 'Messages',
@@ -64,29 +60,10 @@ export class HeaderComponent implements OnInit {
   }
 
   scrollToAbout() {
-    if (this.router.url !== '/') {
-      this.router.navigate(['/']).then(() => {
-        setTimeout(() => {
-          this.scrollIntoAboutSection();
-        }, 150);
-      });
-      return;
+    const el = document.getElementById('about');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
     }
-    this.scrollIntoAboutSection();
-  }
-
-  private scrollIntoAboutSection() {
-    const aboutSection = document.getElementById('about');
-    if (!aboutSection) return;
-
-    const headerOffset = 100;
-    const elementPosition = aboutSection.getBoundingClientRect().top + window.scrollY;
-    const offsetPosition = elementPosition - headerOffset;
-
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
-    });
   }
 
   logout() {

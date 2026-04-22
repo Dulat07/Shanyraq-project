@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { LanguageService } from '../../services/language.service';
+import { NotificationService } from '../../services/notification.service';
 import { tap } from 'rxjs';
 
 @Component({
@@ -22,7 +23,8 @@ export class LoginComponent {
   constructor(
     private apiService: ApiService,
     private router: Router,
-    private langService: LanguageService
+    private langService: LanguageService,
+    private notificationService: NotificationService
   ) {
     this.lang = this.langService.currentLang;
     this.langService.lang$.subscribe(l => this.lang = l);
@@ -31,13 +33,16 @@ export class LoginComponent {
   onLogin(): void {
     this.apiService.login({ username: this.username, password: this.password }).subscribe({
       next: () => this.router.navigate(['/home']),
-      error: (err) => alert(this.lang === 'ru' ? 'Ошибка входа, проверьте ваши данные.' : 'Login failed, please check your credentials.')
+      error: (err) => {
+        const message = err?.error?.message || 'Login failed, please check your credentials';
+        this.notificationService.show(message);
+      }
     });
   }
 
   onAuthSubmit(): void {
     if (this.authMode === 'signup') {
-      alert(this.lang === 'ru' ? 'Регистрация скоро будет доступна.' : 'Sign up will be available soon.');
+      this.notificationService.show(this.lang === 'ru' ? 'Регистрация скоро будет доступна.' : 'Sign up will be available soon.');
       return;
     }
 

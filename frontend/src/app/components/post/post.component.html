@@ -51,8 +51,26 @@
         </div>
 
         <div class="form-field form-field--full">
-          <label for="image">{{ lang === 'ru' ? 'URL изображения' : 'Image URL' }}</label>
-          <input id="image" [(ngModel)]="form.image" placeholder="https://..." />
+          <label>{{ lang === 'ru' ? 'Фотографии' : 'Photos' }}</label>
+          <div class="image-upload" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+            <input
+              type="file"
+              (change)="onFileSelect($event)"
+              multiple
+              accept="image/*"
+              [attr.aria-label]="lang === 'ru' ? 'Загрузить фотографии' : 'Upload photos'"
+            />
+            <div class="upload-box">
+              <span>{{ lang === 'ru' ? 'Нажмите или перетащите изображения для загрузки' : 'Click or drag images to upload' }}</span>
+            </div>
+          </div>
+
+          <div class="preview-list" *ngIf="images.length">
+            <div class="preview-item" *ngFor="let img of images; let i = index">
+              <img [src]="img.preview" [alt]="lang === 'ru' ? 'Предпросмотр фотографии' : 'Photo preview'" />
+              <button type="button" (click)="removeImage(i)" class="remove-btn" [attr.aria-label]="lang === 'ru' ? 'Удалить фотографию' : 'Remove photo'">×</button>
+            </div>
+          </div>
         </div>
 
         <div class="form-field form-field--full">

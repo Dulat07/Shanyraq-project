@@ -6,7 +6,7 @@
     </div>
 
     <button class="clear-btn" type="button" (click)="clearFilters()">
-      {{ lang === 'ru' ? 'Очистить' : 'Clear' }}
+      {{ lang === 'ru' ? 'Очистить фильтры' : 'Clear filters' }}
     </button>
   </div>
 
@@ -16,12 +16,12 @@
     <div class="filters-grid">
       <label class="filter-field">
         <span>{{ lang === 'ru' ? 'Цена от' : 'Price from' }}</span>
-        <input type="number" formControlName="priceMin" [placeholder]="lang === 'ru' ? 'Мин. цена' : 'Min price'" />
+        <input type="number" min="0" formControlName="priceMin" (keydown)="preventNegativeInput($event)" (input)="sanitizeNumber('priceMin')" [placeholder]="lang === 'ru' ? 'Мин. цена' : 'Min price'" />
       </label>
 
       <label class="filter-field">
         <span>{{ lang === 'ru' ? 'Цена до' : 'Price to' }}</span>
-        <input type="number" formControlName="priceMax" [placeholder]="lang === 'ru' ? 'Макс. цена' : 'Max price'" />
+        <input type="number" min="0" formControlName="priceMax" (keydown)="preventNegativeInput($event)" (input)="sanitizeNumber('priceMax')" [placeholder]="lang === 'ru' ? 'Макс. цена' : 'Max price'" />
       </label>
 
       <label class="filter-field">
@@ -72,12 +72,12 @@
 
       <label class="filter-field">
         <span>{{ lang === 'ru' ? 'Площадь от' : 'Area from' }}</span>
-        <input type="number" formControlName="areaMin" [placeholder]="lang === 'ru' ? 'Мин. площадь' : 'Min area'" />
+        <input type="number" min="0" formControlName="areaMin" (keydown)="preventNegativeInput($event)" (input)="sanitizeNumber('areaMin')" [placeholder]="lang === 'ru' ? 'Мин. площадь' : 'Min area'" />
       </label>
 
       <label class="filter-field">
         <span>{{ lang === 'ru' ? 'Площадь до' : 'Area to' }}</span>
-        <input type="number" formControlName="areaMax" [placeholder]="lang === 'ru' ? 'Макс. площадь' : 'Max area'" />
+        <input type="number" min="0" formControlName="areaMax" (keydown)="preventNegativeInput($event)" (input)="sanitizeNumber('areaMax')" [placeholder]="lang === 'ru' ? 'Макс. площадь' : 'Max area'" />
       </label>
     </div>
   </div>
